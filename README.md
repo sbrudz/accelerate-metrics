@@ -13,10 +13,10 @@ The goal of this project is to provide an easy way to generate the four key metr
 
 ## The four key metrics from Accelerate
 
-- **lead time**: "the time it takes to go from code committed to code successfully running in production"
-- **deployment frequency**: how often code is deployed to production
-- **mean time to restore**: how long it takes to restore service for the primary application when a service incident occurs
-- **change fail percentage**: what percentage of changes for the primary application result in degraded service or subsequently require remediation
+- **lead time**: For the primary application or service you work on, what is your lead time for changes (i.e., how long does it take to go from code committed to code successfully running in production)?
+- **deployment frequency**: For the primary application or service you work on, how often does your organization deploy code to production or release it to end users?
+- **mean time to restore**: For the primary application or service you work on, how long does it generally take to restore service when a service incident or a defect that impacts users occurs (e.g., unplanned outage or service impairment)?
+- **change fail percentage**: For the primary application or service you work on, what percentage of changes to production or released to users result in degraded service (e.g., lead to service impairment or service outage) and subsequently require remediation (e.g., require a hotfix, rollback, fix forward, patch)?
 
 ### Lead Time
 
@@ -75,6 +75,8 @@ With Heroku, there's the opportunity to leverage their data instead of depending
 
 No GitHub data is required for this metric.
 
+Heroku releases encompass both code deployments and environment changes.  This increases the complexity of the calculations.  An environment change could cause a failure and so would contribute to the change fail percentage.  Similarly, a rollback event could roll back to an environment change release, which might potentially include a different git commit.
+
 ### Mean Time to Restore (MTTR)
 
 The RedGate approach is as follows:
@@ -98,3 +100,30 @@ No GitHub data is required for this metric.
 The one murky area remaining related to stability is the release or situation that causes degraded stability for end-users but is fixed either by a new release (not a Heroku rollback) or a configuration change.  For example, the Redis AddOn runs out of space or connections and users are unable to log in until the service configuration has been manually updated.  This ties into the Availability metric referenced in the 2019 version of the DevOps Report.  Ideally, it would also add to MTTR metric.
 
 The challenge is that "degraded service" will likely mean different things for different applications.  Monitoring services such as New Relic allow thresholds to be configured.  Heroku offers similar functionality for professional dynos but does not expose it via their public API.  This data could be used to inform the MTTR metric.  In the future, this project will look at integrating that availability and alerting data into the metrics.  For now, it is out of scope.
+
+## Design
+
+While it is tempting to write this as a GitHub action, the script does not need to depend on a particular CI environment.  It could be run in any git repository that is deployed to Heroku.  Working from the outside inwards:
+* Run the script to generate the metrics, passing in: 
+  * the Heroku App name
+  * the Heroku API key
+  * LookbackMonths -- How many months back to report on (defaults to 12)
+  * WindowSizeDays -- The size (in days) of the rolling window used for metric averaging (defaults to 30)
+  * WindowIntervalDays -- The interval (in days) between each point in the graph (defaults to 7)
+  RedGate Metrics supports other parameters but the above list will do for a start.
+* At a minimum, the output should be an HTML page with 4 graphs, one for each metric.
+* Ideally, it should also output a JSON file containing the release history with all relevant statistics for each release included.  The JSON file should serve as the source for generating the graphs.
+
+Only Deploy releases should be considered for Lead Time and Deployment Frequency.
+What do we do with MTTR and Change Fail? Should that include configuration changes as well?
+Maybe the thing to do is to model this as a stream of events:
+- SuccessfulDeploy
+- FailedDeploy
+- ServiceIncident
+- ServiceRestored
+The tricky part is the connection between Deploy and ServiceIncident.  Maybe FailedDeploy doesn't need to exist if we can use the sequence of Deploy and ServiceIncident to infer that the change failed or link it some other way.
+
+## Future Feature Ideas
+
+- Show Elite, High, Medium, Low bands on graphs
+- Enable anonymous reporting back to State of DevOps group
