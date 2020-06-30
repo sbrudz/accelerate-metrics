@@ -123,6 +123,8 @@ Maybe the thing to do is to model this as a stream of events:
 - ServiceRestored
 The tricky part is the connection between Deploy and ServiceIncident.  Maybe FailedDeploy doesn't need to exist if we can use the sequence of Deploy and ServiceIncident to infer that the change failed or link it some other way.
 
+Start with the simplest possible thing that could work. Deployment frequency is the easiest metric, so I'll begin with that to get the ball rolling.  Given a list of heroku release events, transform that into a list of code deploys.  Process the list of code deploys to calculate a running average of deployment frequency.  
+
 ## Future Feature Ideas
 
 - Show Elite, High, Medium, Low bands on graphs
