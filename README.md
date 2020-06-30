@@ -23,7 +23,7 @@ The goal of this project is to provide an easy way to generate the four key metr
 The RedGate approach is as follows:
 
 > Given a list of tagged releases:
-> 
+>
 > * Get all new commits included in each release
 > * Calculate the time between each commit and the time of release (the Delivery Lead Time of each individual commit)
 > * Find the median one and treat it as the average Delivery Lead Time for that release
@@ -38,7 +38,7 @@ Data required from Heroku:
 Data require from GitHub:
 * Git history to determine which commits are included in the release and their timestamps.
 
-Challenges: 
+Challenges:
 * If a branch was force pushed and the commit released to heroku was overwritten, then it becomes much more difficult to determine the lead time for that release
 
 Questions:
@@ -49,7 +49,7 @@ Questions:
 The RedGate approach is as follows:
 
 > Given a list of tagged releases:
->  
+>
 > * Calculate the time period passed between releases being made
 > * Present the mean average of those release intervals
 
@@ -104,7 +104,7 @@ The challenge is that "degraded service" will likely mean different things for d
 ## Design
 
 While it is tempting to write this as a GitHub action, the script does not need to depend on a particular CI environment.  It could be run in any git repository that is deployed to Heroku.  Working from the outside inwards:
-* Run the script to generate the metrics, passing in: 
+* Run the script to generate the metrics, passing in:
   * the Heroku App name
   * the Heroku API key
   * LookbackMonths -- How many months back to report on (defaults to 12)
@@ -123,7 +123,7 @@ Maybe the thing to do is to model this as a stream of events:
 - ServiceRestored
 The tricky part is the connection between Deploy and ServiceIncident.  Maybe FailedDeploy doesn't need to exist if we can use the sequence of Deploy and ServiceIncident to infer that the change failed or link it some other way.
 
-Start with the simplest possible thing that could work. Deployment frequency is the easiest metric, so I'll begin with that to get the ball rolling.  Given a list of heroku release events, transform that into a list of code deploys.  Process the list of code deploys to calculate a running average of deployment frequency.  
+Start with the simplest possible thing that could work. Deployment frequency is the easiest metric, so I'll begin with that to get the ball rolling.  Given a list of heroku release events, transform that into a list of code deploys.  Process the list of code deploys to calculate a running average of deployment frequency.
 
 ## Future Feature Ideas
 
