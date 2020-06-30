@@ -2,13 +2,12 @@
   "name": "accelerate-metrics",
   "version": "0.0.1",
   "description": "A tool to calculate Accelerate DevOps metrics",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "type": "module",
   "scripts": {
-    "pretest": "npm run lint",
-    "test": "jest",
-    "posttest": "npm run format",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "npm test -- --watch",
+    "test:coverage": "npm test -- --coverage",
     "lint": "eslint . --cache --fix",
     "format": "prettier --loglevel warn --write \"**/*.{js,css,md}\""
   },
@@ -33,6 +32,10 @@
     "jest": "^26.1.0",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5"
+  },
+  "jest": {
+    "transform": {},
+    "testEnvironment": "jest-environment-node"
   },
   "husky": {
     "hooks": {
