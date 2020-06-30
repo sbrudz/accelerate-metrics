@@ -4,7 +4,9 @@
   "description": "A tool to calculate Accelerate DevOps metrics",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/sbrudz/accelerate-metrics/issues"
   },
-  "homepage": "https://github.com/sbrudz/accelerate-metrics#readme"
+  "homepage": "https://github.com/sbrudz/accelerate-metrics#readme",
+  "devDependencies": {
+    "jest": "^26.1.0"
+  }
 }
