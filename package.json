@@ -4,9 +4,11 @@
   "description": "A tool to calculate Accelerate DevOps metrics",
   "main": "index.js",
   "scripts": {
+    "pretest": "npm run lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "lint": "eslint . --cache --fix"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,7 @@
   },
   "homepage": "https://github.com/sbrudz/accelerate-metrics#readme",
   "devDependencies": {
+    "eslint": "^7.3.1",
     "jest": "^26.1.0"
   }
 }
