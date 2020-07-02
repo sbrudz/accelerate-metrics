@@ -52,11 +52,4 @@ describe("Deployment Frequency calculation", () => {
       expect(result).toEqual(0);
     });
   });
-
-  describe("given a null list of timestamps", () => {
-    it("should return 0", () => {
-      const result = averageFrequency();
-      expect(result).toEqual(0);
-    });
-  });
 });

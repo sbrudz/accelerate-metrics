@@ -1,4 +1,4 @@
-import { hello } from "./index";
+import { hello } from "./main";
 
 describe("hello", () => {
   it("should return World", () => {
