@@ -4,12 +4,11 @@ const sum = (items: number[]) => {
   return items.reduce((a, b) => a + b, 0);
 };
 
-export const averageFrequency = (timestamps: string[]) => {
+export const averageFrequency = (timestamps: DateTime[]) => {
   if (!timestamps || timestamps.length <= 1) {
     return 0;
   }
   const secondsBetweenTimestamps = timestamps
-    .map((timestamp) => DateTime.fromISO(timestamp))
     .reduce((result: Interval[], value, index, array) => {
       if (index > 0) {
         const prevValue = array[index - 1];
