@@ -138,7 +138,10 @@ Start with the simplest possible thing that could work. Deployment frequency is 
 - Show Elite, High, Medium, Low bands on graphs
 - Enable anonymous reporting back to State of DevOps group
 
-## Related Projects
+## Similar Projects
 
+- https://github.com/red-gate/RedGate.Metrics
 - https://github.com/stelligent/pipeline-dashboard
 - https://www.cloudbees.com/products/devoptics/overview
+- https://github.com/GoogleCloudPlatform/fourkeys
+- https://gitlab.com/gitlab-org/gitlab/-/issues/37139
