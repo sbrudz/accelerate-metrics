@@ -1,8 +1,8 @@
 import Heroku from "heroku-client";
-
-const { DateTime } = require("luxon");
+import { mean, median } from "mathjs";
+import { DateTime } from "luxon";
 import { rollingWindows } from "./rolling-window";
-import { averageFrequency } from "./deployment-frequency";
+import { averageFrequency, getIntervalsBetween } from "./deployment-frequency";
 import { HerokuPlatformApiRelease } from "@heroku-cli/typescript-api-schema";
 
 const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN });
@@ -18,27 +18,39 @@ export const hello = () => {
 // for each timepoint, look back by the amount of windowSize, creating one window interval per timepoint
 // filter heroku releases by timepoint window interval
 const appName = "resiliencehealth-dev";
-heroku.get<HerokuPlatformApiRelease[]>(`/apps/${appName}/releases`).then((releases) => {
-  const windows = rollingWindows({
-    reportDate: DateTime.fromJSDate(new Date()),
-    reportOnDuration: { months: 1 },
-    windowIntervalSize: { days: 7 },
-    windowDuration: { days: 30 }
-  });
-  const stats = windows.map((window) => {
+heroku
+  .get<HerokuPlatformApiRelease[]>(`/apps/${appName}/releases`)
+  .then((releases) => {
+    const windows = rollingWindows({
+      reportDate: DateTime.fromJSDate(new Date()).startOf("day"),
+      reportOnDuration: { months: 3 },
+      windowIntervalSize: { days: 7 },
+      windowDuration: { days: 30 },
+    });
+
+    console.log(releases);
     const releaseTimestamps = releases
-      .filter(release => /^Deploy/.test(release.description || ""))
-      .map(release => DateTime.fromISO(release.created_at));
-    const releasesInWindow = releaseTimestamps.filter(release => window.contains(release));
-    const averageFrequencyCalc = averageFrequency(releasesInWindow);
-    // return {
-    //   timePoint: window.end.toISODate(),
-    //   averageFrequency: averageFrequencyCalc
-    // };
-    return [window.end.toMillis(), averageFrequencyCalc * 1e5]
+      .filter((release) => /^Deploy/.test(release.description || ""))
+      .map((release) => DateTime.fromISO(release.created_at || ""));
+
+    const stats = windows.map((window) => {
+      console.log(window.toISO());
+      // console.log(window.splitBy({weeks: 1}).map(d=>d.toISO()));
+      const releasesInWindow = releaseTimestamps.filter((release) =>
+        window.contains(release)
+      );
+      const averageFrequencyCalc = averageFrequency(releasesInWindow);
+      // return {
+      //   timePoint: window.end.toISODate(),
+      //   averageFrequency: averageFrequencyCalc
+      // };
+      return [window.end.toMillis(), averageFrequencyCalc * 1e5];
+    });
+    // const deployments = releases
+    //   .filter(release => /^Deploy/.test(release.description || ""))
+    //   .map(release => DateTime.fromISO(release.created_at || "").toMillis());
+    // process.stdout.write(JSON.stringify(deployments) + '\n');
   });
-  console.log(stats);
-});
 // calc deploy frequency:
 // filter releases to get only code deploys
 // create an interval for each pair of code deploys
@@ -54,3 +66,9 @@ heroku.get<HerokuPlatformApiRelease[]>(`/apps/${appName}/releases`).then((releas
 // calculate the average duration for all the intervals == average lead time for window
 
 // but maybe instead of the average / arithmetic mean, we want the median
+
+// take our window and find all releases in that window
+// need to somehow transform that list into a frequency bucket
+// problem is that the data will be unevenly distributed
+// does it fit once per hour? once per day? once per month?
+// could calculate #/month, #/day, and #/hour
