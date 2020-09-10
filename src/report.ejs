@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Accelerate Metrics for <%= projectName %></title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
+</head>
+<body>
+<div id="deploy-freq"></div>
+<script type="application/javascript">
+  const formatFreq = (freq) => {
+    if (freq >= 277.8e-6) {
+      return math.round((freq / 277.8) * 1e6, 1) + " per hour";
+    }
+    if (freq >= 11.57e-6) {
+      return math.round((freq / 11.57) * 1e6, 1) + " per day";
+    }
+    if (freq >= 1.653e-6) {
+      return math.round((freq / 1.653) * 1e6, 1) + " per week";
+    }
+    if (freq >= 385.8e-9) {
+      return math.round((freq / 385.8) * 1e9, 1) + " per month";
+    }
+    if (freq >= 64.3e-9) {
+      return math.round((freq / 64.3) * 1e9, 1) + " per 6 months";
+    }
+    if (freq >= 31.7e-9) {
+      return math.round((freq / 31.7) * 1e9, 1) + " per year";
+    }
+    if (freq >= 3.171e-9) {
+      return math.round((freq / 3.171) * 1e9, 1) + " per decade";
+    }
+    return freq;
+  };
+
+  Highcharts.chart("deploy-freq", {
+    chart: {
+      zoomType: "x",
+    },
+    title: {
+      text: "Deploy Frequency",
+    },
+    subtitle: {
+      text:
+        document.ontouchstart === undefined
+          ? "Click and drag in the plot area to zoom in"
+          : "Pinch the chart to zoom in",
+    },
+    xAxis: {
+      type: "datetime",
+    },
+    yAxis: {
+      type: "logarithmic",
+      title: {
+        text: "Average Deploy Frequency over previous 30 days",
+      },
+      labels: {
+        formatter: function () {
+          return formatFreq(this.value);
+        },
+      },
+      tickPositions: [
+        31.7e-9,
+        64.3e-9,
+        385.8e-9,
+        1.653e-6,
+        11.57e-6,
+        277.8e-6,
+      ].map((v) => Math.log10(v)),
+    },
+    tooltip: {
+      pointFormatter: function () {
+        return `<span style="color:${this.color}">●</span> ${
+          this.series.name
+        }: <b>${formatFreq(this.y)}</b><br/>`;
+      },
+    },
+    series: [
+      {
+        type: "line",
+        name: "Production",
+        data: <%=deployFreqData%>,
+      }
+    ],
+  });
+</script>
+</body>
+</html>

@@ -1,9 +1,10 @@
 import Heroku from "heroku-client";
-import { mean, median } from "mathjs";
 import { DateTime } from "luxon";
 import { rollingWindows } from "./rolling-window";
-import { averageFrequency, getIntervalsBetween } from "./deployment-frequency";
-import { HerokuPlatformApiRelease } from "@heroku-cli/typescript-api-schema";
+import { bestMeanFrequency, toHertz } from "./deployment-frequency";
+import { getDeployments } from "./heroku-deployments";
+import ejs from "ejs";
+import fs from "fs/promises";
 
 const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN });
 
@@ -17,39 +18,42 @@ export const hello = () => {
 // split that into timepoints based on the desired windowInterval
 // for each timepoint, look back by the amount of windowSize, creating one window interval per timepoint
 // filter heroku releases by timepoint window interval
-const appName = "resiliencehealth-dev";
-heroku
-  .get<HerokuPlatformApiRelease[]>(`/apps/${appName}/releases`)
-  .then((releases) => {
+const appName = "resiliencehealth-prod";
+const projectStartDate = DateTime.utc(2020, 6, 9);
+getDeployments(appName, heroku)
+  .then((deployments) => {
     const windows = rollingWindows({
       reportDate: DateTime.fromJSDate(new Date()).startOf("day"),
       reportOnDuration: { months: 3 },
-      windowIntervalSize: { days: 7 },
+      windowIntervalSize: { days: 3 },
       windowDuration: { days: 30 },
     });
 
-    console.log(releases);
-    const releaseTimestamps = releases
-      .filter((release) => /^Deploy/.test(release.description || ""))
-      .map((release) => DateTime.fromISO(release.created_at || ""));
-
-    const stats = windows.map((window) => {
-      console.log(window.toISO());
-      // console.log(window.splitBy({weeks: 1}).map(d=>d.toISO()));
-      const releasesInWindow = releaseTimestamps.filter((release) =>
-        window.contains(release)
-      );
-      const averageFrequencyCalc = averageFrequency(releasesInWindow);
-      // return {
-      //   timePoint: window.end.toISODate(),
-      //   averageFrequency: averageFrequencyCalc
-      // };
-      return [window.end.toMillis(), averageFrequencyCalc * 1e5];
-    });
-    // const deployments = releases
-    //   .filter(release => /^Deploy/.test(release.description || ""))
-    //   .map(release => DateTime.fromISO(release.created_at || "").toMillis());
-    // process.stdout.write(JSON.stringify(deployments) + '\n');
+    const stats = windows
+      .filter(
+        (window) => window.start.toMillis() >= projectStartDate.toMillis()
+      )
+      .map((window) => {
+        const deploymentTimeStampsInWindow = deployments
+          .filter((deploy) => window.contains(deploy.timeCreated))
+          .map((deployInWindow) => deployInWindow.timeCreated);
+        const meanFrequency = bestMeanFrequency(
+          deploymentTimeStampsInWindow,
+          window
+        );
+        return [window.end.toMillis(), toHertz(meanFrequency)];
+      });
+    return JSON.stringify(stats);
+  })
+  .then((stats) => {
+    return ejs.renderFile(
+      "./src/report.ejs",
+      { projectName: appName, deployFreqData: stats },
+      { async: true }
+    );
+  })
+  .then((reportHtml) => {
+    return fs.writeFile("./report.html", reportHtml, "utf8");
   });
 // calc deploy frequency:
 // filter releases to get only code deploys
