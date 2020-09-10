@@ -1,4 +1,4 @@
-import { DateTime, DurationObject, Interval } from "luxon";
+import { DateTime, Duration, DurationObject, Interval } from "luxon";
 import { mean } from "mathjs";
 
 const sum = (items: number[]) => {
@@ -79,4 +79,11 @@ export const bestMeanFrequency = (
       }
       return curr;
     });
+};
+
+export const toHertz = (frequencyOverTime: FrequencyOverTimePeriod) => {
+  const secondsInTimePeriod = Duration.fromObject(
+    frequencyOverTime.timePeriod
+  ).as("seconds");
+  return frequencyOverTime.amount / secondsInTimePeriod;
 };

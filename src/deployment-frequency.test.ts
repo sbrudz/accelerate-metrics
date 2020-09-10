@@ -4,6 +4,7 @@ import {
   bestMeanFrequency,
   getIntervalsBetween,
   meanFrequencyPerTimePeriod,
+  toHertz,
 } from "./deployment-frequency";
 
 describe("Deployment Frequency calculations", () => {
@@ -206,6 +207,27 @@ describe("Deployment Frequency calculations", () => {
             timePeriod: { months: 6 },
           });
         });
+      });
+    });
+  });
+
+  describe("toHertz", () => {
+    describe("when given a frequency of once per day", () => {
+      it("should return ~11.57 uHz", () => {
+        const result = toHertz({ amount: 1, timePeriod: { day: 1 } });
+        expect(result).toBeCloseTo(11.57e-6, 8);
+      });
+    });
+    describe("when given a frequency of once per week", () => {
+      it("should return ~1.653 uHz", () => {
+        const result = toHertz({ amount: 1, timePeriod: { week: 1 } });
+        expect(result).toBeCloseTo(1.653e-6, 9);
+      });
+    });
+    describe("when given a frequency of once per month", () => {
+      it("should return ~385.8 nHz", () => {
+        const result = toHertz({ amount: 1, timePeriod: { month: 1 } });
+        expect(result).toBeCloseTo(385.8e-9, 10);
       });
     });
   });
