@@ -182,6 +182,15 @@ describe("Deployment Frequency calculations", () => {
           });
         });
       });
+      describe("and no timestamps", () => {
+        it("should return 0 per year", () => {
+          const result = bestMeanFrequency([], window);
+          expect(result).toEqual({
+            amount: 0,
+            timePeriod: { year: 1 },
+          });
+        });
+      });
     });
     describe("when provided with a year-long window", () => {
       const window = Interval.fromDateTimes(
@@ -228,6 +237,18 @@ describe("Deployment Frequency calculations", () => {
       it("should return ~385.8 nHz", () => {
         const result = toHertz({ amount: 1, timePeriod: { month: 1 } });
         expect(result).toBeCloseTo(385.8e-9, 10);
+      });
+    });
+    describe("when given a frequency of once per year", () => {
+      it("should return ~31.71 nHz", () => {
+        const result = toHertz({ amount: 1, timePeriod: { year: 1 } });
+        expect(result).toBeCloseTo(31.71e-9, 11);
+      });
+    });
+    describe("when given a frequency of once per six months", () => {
+      it("should return ~64.3 nHz", () => {
+        const result = toHertz({ amount: 1, timePeriod: { months: 6 } });
+        expect(result).toBeCloseTo(64.3e-9, 10);
       });
     });
   });

@@ -66,6 +66,10 @@ export const bestMeanFrequency = (
   timestamps: DateTime[],
   window: Interval
 ): FrequencyOverTimePeriod => {
+  const defaultMean: FrequencyOverTimePeriod = {
+    amount: 0,
+    timePeriod: { year: 1 },
+  };
   return TIME_PERIODS.map((timePeriod) => {
     return {
       amount: meanFrequencyPerTimePeriod(timestamps, window, timePeriod),
@@ -74,11 +78,11 @@ export const bestMeanFrequency = (
   })
     .filter((freqObj) => freqObj.amount >= 1)
     .reduce((prev, curr) => {
-      if (prev.amount < curr.amount) {
+      if (prev.amount && prev.amount < curr.amount) {
         return prev;
       }
       return curr;
-    });
+    }, defaultMean);
 };
 
 export const toHertz = (frequencyOverTime: FrequencyOverTimePeriod) => {
