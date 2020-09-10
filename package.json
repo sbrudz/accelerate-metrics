@@ -5,6 +5,8 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
+    "pregenerate": "npm run build",
+    "generate": "node -r dotenv/config lib/main.js",
     "test": "jest",
     "test:watch": "npm test -- --watch",
     "test:coverage": "npm test -- --coverage",
@@ -25,6 +27,7 @@
     "node": ">=14.4.0"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "heroku-client": "^3.1.0",
     "luxon": "^1.24.1",
     "mathjs": "^7.0.2"
@@ -55,8 +58,8 @@
     }
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.{js,css,md}": "prettier --write"
+    "*.ts": "eslint --cache --fix",
+    "*.{ts,css,md}": "prettier --write"
   },
   "config": {
     "commitizen": {

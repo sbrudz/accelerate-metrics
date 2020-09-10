@@ -6,6 +6,21 @@ DevOps Research & Assessment (DORA) metrics is now the standard term for these m
 
 For the current report, download: https://cloud.google.com/devops/state-of-devops/
 
+## Usage
+
+Prerequisites:
+
+- node.js > 14.4
+- `cp .env.example .env` and fill in your environment variables
+
+To generate the report:
+
+- `npm run generate`
+
+To run the tests:
+
+- `npm test`
+
 ## Motivation
 
 In 2019, [Red Gate Software](https://www.red-gate.com/), a UK-based DevOps software provider, released their [code](https://github.com/red-gate/RedGate.Metrics) for generating the four key metrics based on data in a git repository. This release, along with their [overview](https://medium.com/ingeniouslysimple/forget-dumb-productivity-measures-focus-on-software-delivery-performance-with-the-four-key-3ad0e045e5b8) and [explanation](https://medium.com/ingeniouslysimple/learning-from-the-accelerate-four-key-metrics-91725675e30a) of how they use it, is a great service to the community, as it makes the automated calculation of metrics much easier and thus more likely to be used. Their approach is tightly coupled to the use of annotated tags in git to mark releases.
