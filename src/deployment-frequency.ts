@@ -1,5 +1,5 @@
-import { DateTime, DurationObject, DurationUnit, Interval } from "luxon";
-import { median } from "mathjs";
+import { DateTime, DurationObject, Interval } from "luxon";
+import { mean } from "mathjs";
 
 const sum = (items: number[]) => {
   return items.reduce((a, b) => a + b, 0);
@@ -31,11 +31,11 @@ export const averageFrequency = (timestamps: DateTime[]) => {
   return 1 / averagePeriod; // frequency is the inverse of period
 };
 
-export const medianFrequencyPerTimePeriod = (
+export const meanFrequencyPerTimePeriod = (
   timestamps: DateTime[],
   window: Interval,
   timePeriod: DurationObject
-) => {
+): number => {
   const bins = window.splitBy(timePeriod);
   const countsPerBin = bins.map((bin) => {
     return timestamps.reduce((acc, currTimestamp) => {
@@ -45,5 +45,38 @@ export const medianFrequencyPerTimePeriod = (
       return acc;
     }, 0);
   });
-  return median(countsPerBin);
+  return mean(countsPerBin);
+};
+
+const TIME_PERIODS: DurationObject[] = [
+  { hour: 1 },
+  { day: 1 },
+  { week: 1 },
+  { month: 1 },
+  { months: 6 },
+  { year: 1 },
+];
+
+interface FrequencyOverTimePeriod {
+  amount: number;
+  timePeriod: DurationObject;
+}
+
+export const bestMeanFrequency = (
+  timestamps: DateTime[],
+  window: Interval
+): FrequencyOverTimePeriod => {
+  return TIME_PERIODS.map((timePeriod) => {
+    return {
+      amount: meanFrequencyPerTimePeriod(timestamps, window, timePeriod),
+      timePeriod,
+    };
+  })
+    .filter((freqObj) => freqObj.amount >= 1)
+    .reduce((prev, curr) => {
+      if (prev.amount < curr.amount) {
+        return prev;
+      }
+      return curr;
+    });
 };

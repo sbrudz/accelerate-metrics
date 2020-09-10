@@ -1,8 +1,9 @@
 import { DateTime, Interval } from "luxon";
 import {
   averageFrequency,
+  bestMeanFrequency,
   getIntervalsBetween,
-  medianFrequencyPerTimePeriod,
+  meanFrequencyPerTimePeriod,
 } from "./deployment-frequency";
 
 describe("Deployment Frequency calculations", () => {
@@ -128,28 +129,81 @@ describe("Deployment Frequency calculations", () => {
     });
   });
 
-  describe("medianFrequencyPerTimePeriod", () => {
+  describe("meanFrequencyPerTimePeriod", () => {
     describe("when provided with a window", () => {
       const window = Interval.fromDateTimes(
         time1.startOf("month"),
         time1.endOf("month")
       );
       describe("and a set of timestamps", () => {
-        const timestamps = [time1, time2, time3, time4, time5];
+        const timestamps = [
+          time1,
+          time2,
+          time3,
+          time4,
+          time5,
+          DateTime.fromISO("2020-06-08T18:00:00.000Z"),
+          DateTime.fromISO("2020-06-08T19:00:00.000Z"),
+        ];
         describe("and a timePeriod", () => {
           it("should bin the timestamps by timePeriod and find the median count", () => {
-            const result = medianFrequencyPerTimePeriod(timestamps, window, {
+            const result = meanFrequencyPerTimePeriod(timestamps, window, {
               week: 1,
             });
-            expect(result).toEqual(1);
+            expect(result).toEqual(1.4);
           });
         });
         describe("and a different timePeriod", () => {
           it("should bin the timestamps by timePeriod and find the median count", () => {
-            const result = medianFrequencyPerTimePeriod(timestamps, window, {
+            const result = meanFrequencyPerTimePeriod(timestamps, window, {
               month: 1,
             });
-            expect(result).toEqual(5);
+            expect(result).toEqual(7);
+          });
+        });
+      });
+    });
+  });
+
+  describe("bestMeanFrequency", () => {
+    describe("when provided with a window", () => {
+      const window = Interval.fromDateTimes(
+        time1.startOf("month"),
+        time6.endOf("month")
+      );
+      describe("and a set of timestamps", () => {
+        const timestamps = [time1, time2, time3, time4, time5, time6];
+        it("should return the mean frequency at the most accurate granularity", () => {
+          const result = bestMeanFrequency(timestamps, window);
+          expect(result).toEqual({
+            amount: 3,
+            timePeriod: { month: 1 },
+          });
+        });
+      });
+    });
+    describe("when provided with a year-long window", () => {
+      const window = Interval.fromDateTimes(
+        time1.startOf("year"),
+        time1.endOf("year")
+      );
+      describe("and a single timestamp", () => {
+        const timestamps = [time1];
+        it("should return the mean frequency at the yearly granularity", () => {
+          const result = bestMeanFrequency(timestamps, window);
+          expect(result).toEqual({
+            amount: 1,
+            timePeriod: { year: 1 },
+          });
+        });
+      });
+      describe("and two timestamps far apart", () => {
+        const timestamps = [time1, time1.minus({ months: 4 })];
+        it("should return the mean frequency at the 6 month granularity", () => {
+          const result = bestMeanFrequency(timestamps, window);
+          expect(result).toEqual({
+            amount: 1,
+            timePeriod: { months: 6 },
           });
         });
       });
