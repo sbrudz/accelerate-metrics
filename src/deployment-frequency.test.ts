@@ -1,5 +1,9 @@
-import { DateTime } from "luxon";
-import { averageFrequency, getIntervalsBetween } from "./deployment-frequency";
+import { DateTime, Interval } from "luxon";
+import {
+  averageFrequency,
+  getIntervalsBetween,
+  medianFrequencyPerTimePeriod,
+} from "./deployment-frequency";
 
 describe("Deployment Frequency calculations", () => {
   const time1 = DateTime.fromISO("2020-06-01T14:00:00.000Z");
@@ -120,6 +124,34 @@ describe("Deployment Frequency calculations", () => {
         expect(() => averageFrequency([badTime, time1])).toThrowError(
           /Bad interval/
         );
+      });
+    });
+  });
+
+  describe("medianFrequencyPerTimePeriod", () => {
+    describe("when provided with a window", () => {
+      const window = Interval.fromDateTimes(
+        time1.startOf("month"),
+        time1.endOf("month")
+      );
+      describe("and a set of timestamps", () => {
+        const timestamps = [time1, time2, time3, time4, time5];
+        describe("and a timePeriod", () => {
+          it("should bin the timestamps by timePeriod and find the median count", () => {
+            const result = medianFrequencyPerTimePeriod(timestamps, window, {
+              week: 1,
+            });
+            expect(result).toEqual(1);
+          });
+        });
+        describe("and a different timePeriod", () => {
+          it("should bin the timestamps by timePeriod and find the median count", () => {
+            const result = medianFrequencyPerTimePeriod(timestamps, window, {
+              month: 1,
+            });
+            expect(result).toEqual(5);
+          });
+        });
       });
     });
   });

@@ -1,4 +1,5 @@
-import { DateTime, Interval } from "luxon";
+import { DateTime, DurationObject, DurationUnit, Interval } from "luxon";
+import { median } from "mathjs";
 
 const sum = (items: number[]) => {
   return items.reduce((a, b) => a + b, 0);
@@ -28,4 +29,21 @@ export const averageFrequency = (timestamps: DateTime[]) => {
   const averagePeriod =
     sum(secondsBetweenTimestamps) / secondsBetweenTimestamps.length;
   return 1 / averagePeriod; // frequency is the inverse of period
+};
+
+export const medianFrequencyPerTimePeriod = (
+  timestamps: DateTime[],
+  window: Interval,
+  timePeriod: DurationObject
+) => {
+  const bins = window.splitBy(timePeriod);
+  const countsPerBin = bins.map((bin) => {
+    return timestamps.reduce((acc, currTimestamp) => {
+      if (bin.contains(currTimestamp)) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+  });
+  return median(countsPerBin);
 };
