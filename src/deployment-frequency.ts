@@ -1,5 +1,28 @@
 import { DateTime, Duration, DurationObject, Interval } from "luxon";
 import { mean } from "mathjs";
+import { RollingWindowInputs, rollingWindows } from "./rolling-window";
+import { Deployment } from "./heroku-deployments";
+
+export const calculateDeploymentFrequency = (
+  deployments: Deployment[],
+  projectStartDate: DateTime,
+  windowParams: RollingWindowInputs
+) => {
+  const windows = rollingWindows(windowParams);
+
+  return windows
+    .filter((window) => window.start.toMillis() >= projectStartDate.toMillis())
+    .map((window) => {
+      const deploymentTimeStampsInWindow = deployments
+        .filter((deploy) => window.contains(deploy.timeCreated))
+        .map((deployInWindow) => deployInWindow.timeCreated);
+      const meanFrequency = bestMeanFrequency(
+        deploymentTimeStampsInWindow,
+        window
+      );
+      return [window.end.toMillis(), toHertz(meanFrequency)];
+    });
+};
 
 const sum = (items: number[]) => {
   return items.reduce((a, b) => a + b, 0);

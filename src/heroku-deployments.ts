@@ -2,6 +2,11 @@ import Heroku from "heroku-client";
 import { HerokuPlatformApiRelease } from "@heroku-cli/typescript-api-schema";
 import { DateTime } from "luxon";
 
+export interface Deployment {
+  commit: string;
+  timeCreated: DateTime;
+}
+
 export const getDeployments = async (appName: string, herokuClient: Heroku) => {
   const releases = await herokuClient.get<HerokuPlatformApiRelease[]>(
     `/apps/${appName}/releases`

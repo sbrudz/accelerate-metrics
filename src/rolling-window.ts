@@ -21,7 +21,7 @@ export const windowPerTimePoint = (windowDuration: DurationObject) => (
   return Interval.before(interval.end, windowDuration);
 };
 
-interface RollingWindowInputs extends TimePointInputs {
+export interface RollingWindowInputs extends TimePointInputs {
   windowDuration: DurationObject;
 }
 
