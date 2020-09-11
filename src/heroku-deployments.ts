@@ -7,7 +7,10 @@ export interface Deployment {
   timeCreated: DateTime;
 }
 
-export const getDeployments = async (appName: string, herokuClient: Heroku) => {
+export const getDeployments = async (
+  appName: string,
+  herokuClient: Heroku
+): Promise<Deployment[]> => {
   const releases = await herokuClient.get<HerokuPlatformApiRelease[]>(
     `/apps/${appName}/releases`
   );
@@ -21,7 +24,7 @@ export const getDeployments = async (appName: string, herokuClient: Heroku) => {
       throw new Error(`Bad deployment description format: ${deploy}`);
     }
     return {
-      commit: match.groups.commit as string,
+      commit: match.groups.commit,
       timeCreated: DateTime.fromISO(deploy.created_at || ""),
     };
   });

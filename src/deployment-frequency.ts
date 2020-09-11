@@ -1,34 +1,28 @@
 import { DateTime, Duration, DurationObject, Interval } from "luxon";
 import { mean } from "mathjs";
-import { RollingWindowInputs, rollingWindows } from "./rolling-window";
 import { Deployment } from "./heroku-deployments";
 
 export const calculateDeploymentFrequency = (
   deployments: Deployment[],
-  projectStartDate: DateTime,
-  windowParams: RollingWindowInputs
-) => {
-  const windows = rollingWindows(windowParams);
-
-  return windows
-    .filter((window) => window.start.toMillis() >= projectStartDate.toMillis())
-    .map((window) => {
-      const deploymentTimeStampsInWindow = deployments
-        .filter((deploy) => window.contains(deploy.timeCreated))
-        .map((deployInWindow) => deployInWindow.timeCreated);
-      const meanFrequency = bestMeanFrequency(
-        deploymentTimeStampsInWindow,
-        window
-      );
-      return [window.end.toMillis(), toHertz(meanFrequency)];
-    });
+  windows: Interval[]
+): Array<Array<number>> => {
+  return windows.map((window) => {
+    const deploymentTimeStampsInWindow = deployments
+      .filter((deploy) => window.contains(deploy.timeCreated))
+      .map((deployInWindow) => deployInWindow.timeCreated);
+    const meanFrequency = bestMeanFrequency(
+      deploymentTimeStampsInWindow,
+      window
+    );
+    return [window.end.toMillis(), toHertz(meanFrequency)];
+  });
 };
 
 const sum = (items: number[]) => {
   return items.reduce((a, b) => a + b, 0);
 };
 
-export const getIntervalsBetween = (timestamps: DateTime[]) => {
+export const getIntervalsBetween = (timestamps: DateTime[]): Interval[] => {
   return timestamps.reduce((result: Interval[], value, index, array) => {
     if (index > 0) {
       const prevValue = array[index - 1];
@@ -42,7 +36,7 @@ export const getIntervalsBetween = (timestamps: DateTime[]) => {
   }, []);
 };
 
-export const averageFrequency = (timestamps: DateTime[]) => {
+export const averageFrequency = (timestamps: DateTime[]): number => {
   if (!timestamps || timestamps.length <= 1) {
     return 0;
   }
@@ -108,7 +102,7 @@ export const bestMeanFrequency = (
     }, defaultMean);
 };
 
-export const toHertz = (frequencyOverTime: FrequencyOverTimePeriod) => {
+export const toHertz = (frequencyOverTime: FrequencyOverTimePeriod): number => {
   const secondsInTimePeriod = Duration.fromObject(
     frequencyOverTime.timePeriod
   ).as("seconds");

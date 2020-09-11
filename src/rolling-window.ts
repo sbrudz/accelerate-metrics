@@ -10,14 +10,14 @@ export const calculateTimePoints = ({
   reportDate,
   reportOnDuration,
   windowIntervalSize,
-}: TimePointInputs) => {
+}: TimePointInputs): Interval[] => {
   const period = Interval.before(reportDate, reportOnDuration);
   return period.splitBy(windowIntervalSize);
 };
 
 export const windowPerTimePoint = (windowDuration: DurationObject) => (
   interval: Interval
-) => {
+): Interval => {
   return Interval.before(interval.end, windowDuration);
 };
 
@@ -30,7 +30,7 @@ export const rollingWindows = ({
   reportOnDuration,
   windowIntervalSize,
   windowDuration,
-}: RollingWindowInputs) => {
+}: RollingWindowInputs): Interval[] => {
   return calculateTimePoints({
     reportDate,
     reportOnDuration,

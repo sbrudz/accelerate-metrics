@@ -4,6 +4,7 @@ import { calculateDeploymentFrequency } from "./deployment-frequency";
 import { getDeployments } from "./heroku-deployments";
 import ejs from "ejs";
 import fs from "fs/promises";
+import { rollingWindows } from "./rolling-window";
 
 const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN });
 const appName = "resiliencehealth-prod";
@@ -17,11 +18,10 @@ const windowParams = {
 
 async function generateReport() {
   const deployments = await getDeployments(appName, heroku);
-  const deployFreqData = calculateDeploymentFrequency(
-    deployments,
-    projectStartDate,
-    windowParams
+  const windows = rollingWindows(windowParams).filter(
+    (window) => window.start.toMillis() >= projectStartDate.toMillis()
   );
+  const deployFreqData = calculateDeploymentFrequency(deployments, windows);
   const reportHtml = await ejs.renderFile(
     "./src/report.ejs",
     { projectName: appName, deployFreqData: JSON.stringify(deployFreqData) },
