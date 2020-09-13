@@ -66,6 +66,9 @@
     xAxis: {
       type: "datetime",
     },
+    time: {
+      useUTC: false
+    },
     yAxis: {
       type: "logarithmic",
       title: {
@@ -124,7 +127,10 @@
       text: "What is your lead time for changes (i.e., how long does it take to go from code committed to code successfully running in production)?"
     },
     xAxis: {
-      type: "datetime",
+      type: "datetime"
+    },
+    time: {
+      useUTC: false
     },
     yAxis: {
       type: "logarithmic",
