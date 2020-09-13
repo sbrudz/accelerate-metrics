@@ -7,13 +7,30 @@
     <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.23.1/humanize-duration.min.js"></script>
     <style type="text/css">
+        body {
+            font-family: sans-serif;
+        }
         h1 {
             text-align: center;
+        }
+        p {
+            margin: 1em 2em;
+            text-align: justify;
         }
     </style>
 </head>
 <body>
 <h1>Accelerate Metrics for <%= projectName %></h1>
+<p>
+    The <a href="https://www.devops-research.com/research.html">DevOps Research & Assessment program</a> (DORA),
+    a part of Google Cloud,
+    uses behavioral science to identify the most effective and efficient ways to develop and deliver software.
+    Over the last six years, they have developed and validated metrics that provide a high-level systems
+    view of software delivery and performance and predict an organization's ability to achieve its goals.
+    This report present the metrics for the <b><%= projectName %> project</b>.  For more details on the metrics
+    and methodology, see the <a href="https://itrevolution.com/book/accelerate/">Accelerate book</a> and the
+    <a href="https://cloud.google.com/devops/state-of-devops">latest DORA report</a>.
+</p>
 <div id="deploy-freq"></div>
 <div id="lead-time"></div>
 <script type="application/javascript">
