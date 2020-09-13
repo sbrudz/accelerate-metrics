@@ -1,22 +1,18 @@
-import {
-  rollingWindows,
-  calculateTimePoints,
-  windowPerTimePoint,
-} from "./rolling-window";
+import { rollingWindows, windowPerTimePoint } from "./rolling-window";
 import { DateTime, Interval } from "luxon";
 
 describe("rolling window calculations", () => {
   describe("rollingWindows", () => {
     describe("given a start date, a reportOnDuration, a window interval, and a window duration", () => {
-      const reportDate = DateTime.fromISO("2020-06-07T18:00:00.000Z");
-      const reportOnDuration = { years: 1 };
+      const reportStart = DateTime.fromISO("2019-06-07T18:00:00.000Z");
+      const reportEnd = DateTime.fromISO("2020-06-07T18:00:00.000Z");
       const windowIntervalSize = { days: 7 };
       const windowDuration = { days: 20 };
 
       it("should return one interval for each time point", () => {
         const result = rollingWindows({
-          reportDate,
-          reportOnDuration,
+          reportStart,
+          reportEnd,
           windowIntervalSize,
           windowDuration,
         });
@@ -25,51 +21,14 @@ describe("rolling window calculations", () => {
 
       it("should return intervals with a size of windowDuration", () => {
         const result = rollingWindows({
-          reportDate,
-          reportOnDuration,
+          reportStart,
+          reportEnd,
           windowIntervalSize,
           windowDuration,
         });
         expect(
           result.map((interval) => interval.length("days"))
         ).toContainEqual(20);
-      });
-    });
-  });
-
-  describe("calculateTimePoints", () => {
-    describe("given a start date, a reportOnDuration, and a window interval", () => {
-      const reportDate = DateTime.fromISO("2020-06-07T18:00:00.000Z");
-      const reportOnDuration = { years: 1 };
-      const windowIntervalSize = { days: 7 };
-
-      it("should return one interval for each time point in the reportOnDuration", () => {
-        const result = calculateTimePoints({
-          reportDate,
-          reportOnDuration,
-          windowIntervalSize,
-        });
-        expect(result).toHaveLength(53);
-      });
-
-      it("should return the first interval with a start date that lines up with the window start", () => {
-        const expectedStart = DateTime.fromISO("2019-06-07T18:00:00.000Z");
-        const result = calculateTimePoints({
-          reportDate,
-          reportOnDuration,
-          windowIntervalSize,
-        });
-        expect(result[0].start).toEqual(expectedStart);
-      });
-
-      it("should return the last interval with an end date that lines up with the window end", () => {
-        const expectedEnd = reportDate;
-        const result = calculateTimePoints({
-          reportDate,
-          reportOnDuration,
-          windowIntervalSize,
-        });
-        expect(result[52].end).toEqual(expectedEnd);
       });
     });
   });
