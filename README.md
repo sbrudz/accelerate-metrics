@@ -148,11 +148,6 @@ Only Deploy releases should be considered for Lead Time and Deployment Frequency
 
 Start with the simplest possible thing that could work. Deployment frequency is the easiest metric, so I'll begin with that to get the ball rolling. Given a list of heroku release events, transform that into a list of code deploys. Process the list of code deploys to calculate a running average of deployment frequency.
 
-## Future Feature Ideas
-
-- Show Elite, High, Medium, Low bands on graphs
-- Enable anonymous reporting back to State of DevOps group
-
 ## Similar Projects
 
 - https://github.com/red-gate/RedGate.Metrics
@@ -160,3 +155,16 @@ Start with the simplest possible thing that could work. Deployment frequency is 
 - https://www.cloudbees.com/products/devoptics/overview
 - https://github.com/GoogleCloudPlatform/fourkeys
 - https://gitlab.com/gitlab-org/gitlab/-/issues/37139
+
+## TODO List
+
+- [ ] improve README - move some details to a separate doc; write up how the data in the charts are calculated
+- [ ] MTTR graph
+- [ ] Change/Fail graph
+- [ ] better error handling/messages if a commit doesn't exist in the git history
+- [ ] convert to a github action so that the report can be generated regularly
+
+Possible new features:
+
+- [ ] show releases per day as a histogram on the Deploy Frequency chart
+- [ ] show lead times per release on the Lead Time chart
