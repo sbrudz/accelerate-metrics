@@ -69,7 +69,7 @@
     yAxis: {
       type: "logarithmic",
       title: {
-        text: "Average Frequency over previous <%= windowSize %> days",
+        text: "<%= windowSize %>-day rolling average of deploy frequency",
       },
       labels: {
         formatter: function () {
@@ -129,7 +129,7 @@
     yAxis: {
       type: "logarithmic",
       title: {
-        text: "Average Lead Time over previous <%= windowSize %> days",
+        text: "<%= windowSize %>-day rolling average of lead time",
       },
       labels: {
         formatter: function () {
