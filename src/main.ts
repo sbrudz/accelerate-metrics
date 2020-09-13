@@ -1,43 +1,31 @@
-import Heroku from "heroku-client";
-import { DateTime, Duration } from "luxon";
-import { calculateDeploymentFrequency } from "./deployment-frequency";
-import { getDeployments } from "./heroku-deployments";
-import ejs from "ejs";
-import fs from "fs/promises";
-import { rollingWindows } from "./rolling-window";
-import { calculateAverageLeadTime } from "./lead-time";
+import { DateTime } from "luxon";
+import { generateReport } from "./report";
 
-const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN });
-const appName = "resiliencehealth-prod";
+const appName = process.env.HEROKU_APP_NAME;
+if (appName === undefined) {
+  throw new Error("HEROKU_APP_NAME environment variable must be defined.");
+}
 const reportFileName = "./report.html";
-const projectStartDate = DateTime.utc(2020, 7, 10);
-const windowParams = {
-  reportStart: projectStartDate,
-  reportEnd: DateTime.fromJSDate(new Date()).startOf("day"),
+
+const reportEndEnvStr = process.env.REPORT_END_DATE;
+const reportEnd = reportEndEnvStr
+  ? DateTime.fromISO(reportEndEnvStr)
+  : DateTime.fromJSDate(new Date()).startOf("day");
+
+const reportStartEnvStr = process.env.REPORT_START_DATE;
+const reportStart = reportStartEnvStr
+  ? DateTime.fromISO(reportStartEnvStr)
+  : reportEnd.minus({ months: 3 });
+
+const reportParams = {
+  herokuAppName: appName,
+  reportFileName,
+  reportStart,
+  reportEnd,
   windowIntervalSize: { days: 1 },
   windowDuration: { days: 14 },
 };
 
-async function generateReport() {
-  const deployments = await getDeployments(appName, heroku);
-  const windows = rollingWindows(windowParams);
-  const deployFreqData = calculateDeploymentFrequency(deployments, windows);
-  const leadTimeData = await calculateAverageLeadTime(deployments, windows);
-  const reportHtml = await ejs.renderFile(
-    "./src/report.ejs",
-    {
-      projectName: appName,
-      windowSize: Duration.fromObject(windowParams.windowDuration).toFormat(
-        "d"
-      ),
-      deployFreqData: JSON.stringify(deployFreqData),
-      leadTimeData: JSON.stringify(leadTimeData),
-    },
-    { async: true }
-  );
-  await fs.writeFile(reportFileName, reportHtml, "utf8");
-}
-
-generateReport().then(() => {
-  console.log("New report generated. Available at ./report.html");
+generateReport(reportParams).then((params) => {
+  console.log(`New report generated. Available at ${params.reportFileName}`);
 });
