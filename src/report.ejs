@@ -17,6 +17,11 @@
 <div id="deploy-freq"></div>
 <div id="lead-time"></div>
 <script type="application/javascript">
+    const bandColorsWarm = ['rgba(255,255,212,0.5)','rgba(254,217,142, 0.5)','rgba(254,153,41, 0.5)','rgba(204,76,2, 0.5)'];
+    const bandColorsCool = ['rgba(237,248,251,0.5)','rgba(179,205,227,0.5)','rgba(140,150,198,0.5)','rgba(136,65,157,0.5)'];
+    const bandColors = bandColorsWarm;
+</script>
+<script type="application/javascript">
   const formatFreq = (freq) => {
     if (freq >= 277.8e-6) {
       return math.round((freq / 277.8) * 1e6, 1) + " per hour";
@@ -72,7 +77,8 @@
     yAxis: {
       type: "logarithmic",
       title: {
-        text: "<%= windowSize %>-day rolling average of deploy frequency",
+        text: "<%= windowSize %>-day rolling average<br/>of deploy frequency",
+        html: true
       },
       labels: {
         formatter: function () {
@@ -87,6 +93,40 @@
         11.57e-6,
         277.8e-6,
       ].map((v) => Math.log10(v)),
+      plotBands: [
+        {
+          from: 31.7e-9,
+          to: 385.8e-9,
+          color: bandColors[3],
+          label: {
+            text: "Low"
+          }
+        },
+        {
+          from: 385.8e-9,
+          to: 1.653e-6,
+          color: bandColors[2],
+          label: {
+            text: "Medium"
+          }
+        },
+        {
+          from: 1.653e-6,
+          to: 11.57e-6,
+          color: bandColors[1],
+          label: {
+            text: "High"
+          }
+        },
+        {
+          from: 11.57e-6,
+          to: 277.8e-6,
+          color: bandColors[0],
+          label: {
+            text: "Elite"
+          }
+        }
+      ]
     },
     tooltip: {
       pointFormatter: function () {
@@ -135,7 +175,8 @@
     yAxis: {
       type: "logarithmic",
       title: {
-        text: "<%= windowSize %>-day rolling average of lead time",
+        html: true,
+        text: "<%= windowSize %>-day rolling average<br/>of lead time",
       },
       labels: {
         formatter: function () {
@@ -150,6 +191,40 @@
         2629800000,
         31557600000
       ].map((v) => Math.log10(v)),
+      plotBands: [
+        {
+          from: 31557600000,
+          to: 2629800000,
+          color: bandColors[3],
+          label: {
+            text: "Low"
+          }
+        },
+        {
+          from: 2629800000,
+          to: 604800000,
+          color: bandColors[2],
+          label: {
+            text: "Medium"
+          }
+        },
+        {
+          from: 604800000,
+          to: 86400000,
+          color: bandColors[1],
+          label: {
+            text: "High"
+          }
+        },
+        {
+          from: 86400000,
+          to: 3600000,
+          color: bandColors[0],
+          label: {
+            text: "Elite"
+          }
+        }
+      ]
     },
     tooltip: {
       pointFormatter: function () {
