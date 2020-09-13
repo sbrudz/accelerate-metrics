@@ -6,13 +6,15 @@ import { exec as execCb } from "child_process";
 
 const exec = promisify(execCb);
 
+const gitProjectDirectory = process.env.GIT_PROJECT_DIRECTORY || ".";
+
 export const getCommitsBetweenRevisions = async (
   start: Deployment,
   end?: Deployment
 ): Promise<Deployment[]> => {
   // TODO: Remove this hard coding of directory
   const revisionQuery = end ? `${start.commit}..${end.commit}` : start.commit;
-  const command = `cd ~/Dev/resilience/app && git log --pretty=format:"%h,%aI" "${revisionQuery}" --no-merges`;
+  const command = `cd ${gitProjectDirectory} && git log --pretty=format:"%h,%aI" "${revisionQuery}" --no-merges`;
   const { stdout, stderr } = await exec(command);
 
   if (stderr) {
