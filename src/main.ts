@@ -14,8 +14,8 @@ const projectStartDate = DateTime.utc(2020, 6, 9);
 const windowParams = {
   reportDate: DateTime.fromJSDate(new Date()).startOf("day"),
   reportOnDuration: { months: 3 },
-  windowIntervalSize: { days: 3 },
-  windowDuration: { days: 30 },
+  windowIntervalSize: { days: 1 },
+  windowDuration: { days: 14 },
 };
 
 async function generateReport() {
