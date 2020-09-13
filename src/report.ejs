@@ -6,8 +6,14 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.23.1/humanize-duration.min.js"></script>
+    <style type="text/css">
+        h1 {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+<h1>Accelerate Metrics for <%= projectName %></h1>
 <div id="deploy-freq"></div>
 <div id="lead-time"></div>
 <script type="application/javascript">
@@ -44,10 +50,18 @@
       text: "Deploy Frequency",
     },
     subtitle: {
+      verticalAlign: "bottom",
+      html: true,
       text:
         document.ontouchstart === undefined
-          ? "Click and drag in the plot area to zoom in"
-          : "Pinch the chart to zoom in",
+          ? "<i>(Click and drag in the plot area to zoom in)</i>"
+          : "<i>(Pinch the chart to zoom in)</i>",
+    },
+    caption: {
+      verticalAlign: "top",
+      align: "center",
+      style: { color: '#000000' },
+      text: "How often does your organization deploy code to production or release it to end users?"
     },
     xAxis: {
       type: "datetime",
@@ -96,10 +110,18 @@
       text: "Lead Time",
     },
     subtitle: {
+      verticalAlign: "bottom",
+      html: true,
       text:
         document.ontouchstart === undefined
-          ? "Click and drag in the plot area to zoom in"
-          : "Pinch the chart to zoom in",
+          ? "<i>(Click and drag in the plot area to zoom in)</i>"
+          : "<i>(Pinch the chart to zoom in)</i>",
+    },
+    caption: {
+      verticalAlign: "top",
+      align: "center",
+      style: { color: '#000000' },
+      text: "What is your lead time for changes (i.e., how long does it take to go from code committed to code successfully running in production)?"
     },
     xAxis: {
       type: "datetime",
