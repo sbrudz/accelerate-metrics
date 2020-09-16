@@ -27,12 +27,14 @@
     uses behavioral science to identify the most effective and efficient ways to develop and deliver software.
     Over the last six years, they have developed and validated metrics that provide a high-level systems
     view of software delivery and performance and predict an organization's ability to achieve its goals.
-    This report present the metrics for the <b><%= projectName %> project</b>.  For more details on the metrics
+    This report presents the metrics for the <b><%= projectName %> project</b>.  For more details on the metrics
     and methodology, see the <a href="https://itrevolution.com/book/accelerate/">Accelerate book</a> and the
     <a href="https://cloud.google.com/devops/state-of-devops">latest DORA report</a>.
 </p>
 <div id="deploy-freq"></div>
 <div id="lead-time"></div>
+<div id="mttr"></div>
+<div id="change-fail"></div>
 <script type="application/javascript">
     const bandColorsWarm = ['rgba(255,255,212,0.5)','rgba(254,217,142, 0.5)','rgba(254,153,41, 0.5)','rgba(204,76,2, 0.5)'];
     const bandColorsCool = ['rgba(237,248,251,0.5)','rgba(179,205,227,0.5)','rgba(140,150,198,0.5)','rgba(136,65,157,0.5)'];
@@ -263,6 +265,105 @@
         }
       }
     ],
+  });
+</script>
+<script>
+  Highcharts.chart("mttr", {
+    chart: {
+      zoomType: "x",
+    },
+    title: {
+      text: "Mean Time to Restore Service (MTTR) -- Coming Soon",
+    },
+    subtitle: {
+      verticalAlign: "bottom",
+      html: true,
+      text:
+        document.ontouchstart === undefined
+          ? "<i>(Click and drag in the plot area to zoom in)</i>"
+          : "<i>(Pinch the chart to zoom in)</i>",
+    },
+    caption: {
+      verticalAlign: "top",
+      align: "center",
+      style: { color: '#000000' },
+      text: "How long does it generally take to restore service when a service incident or a defect that impacts users occurs (e.g., unplanned outage or service impairment)?"
+    },
+    xAxis: {
+      type: "datetime"
+    },
+    time: {
+      useUTC: false
+    },
+    yAxis: {
+      type: "logarithmic",
+      title: {
+        html: true,
+        text: "<%= windowSize %>-day rolling average<br/>of mean time to restore service",
+      },
+      labels: {
+        formatter: function () {
+          return humanizeDuration(this.value, { largest: 1, round: true });
+        },
+      },
+      reversed: true,
+      tickPositions: [
+        3600000,
+        86400000,
+        604800000,
+        2629800000,
+        31557600000
+      ].map((v) => Math.log10(v))
+    },
+    tooltip: {
+      pointFormatter: function () {
+        return `<span style="color:${this.color}">●</span> ${
+          this.series.name
+        }: <b>${humanizeDuration(this.y, { largest: 2 })}</b><br/>`;
+      },
+    },
+    series: [],
+  });
+</script>
+<script>
+  Highcharts.chart("change-fail", {
+    chart: {
+      zoomType: "x",
+    },
+    title: {
+      text: "Change Fail Rate -- Coming Soon",
+    },
+    subtitle: {
+      verticalAlign: "bottom",
+      html: true,
+      text:
+        document.ontouchstart === undefined
+          ? "<i>(Click and drag in the plot area to zoom in)</i>"
+          : "<i>(Pinch the chart to zoom in)</i>",
+    },
+    caption: {
+      verticalAlign: "top",
+      align: "center",
+      style: { color: '#000000' },
+      text: "What percentage of changes to production or released to users result in degraded service (e.g., lead to service impairment or service outage) and subsequently require remediation (e.g., require a hotfix, rollback, fix forward, patch)?"
+    },
+    xAxis: {
+      type: "datetime"
+    },
+    time: {
+      useUTC: false
+    },
+    yAxis: {
+      title: {
+        html: true,
+        text: "<%= windowSize %>-day rolling average<br/>of change-fail percentage",
+      },
+      labels: {
+        format: '{value}%'
+      },
+      reversed: true
+    },
+    series: [],
   });
 </script>
 </body>
