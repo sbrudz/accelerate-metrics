@@ -24,6 +24,8 @@ In 2019, they added a 5th metric, **availability**. It varies from team-to-team,
 Prerequisites:
 
 - node.js > 14.4
+- git for source code version management
+- heroku for deployment
 - `cp .env.example .env` and fill in your environment variables
 
 To generate the report:
@@ -59,6 +61,8 @@ All calculations are done using an X-day rolling average over a period of time, 
 
 The Lead Time chart plots the average lead time using a log scale on the y-axis in order to handle the large amount of variation that could occur. The performance bands (Elite, High, etc.) are based on the ranges in the 2019 DORA report.
 
+![Example Lead Time chart](./docs/img/lead_time.png)
+
 ### Deployment Frequency
 
 - Get the list of all deployments in the form of a git SHA and a deploy date for each
@@ -73,6 +77,8 @@ The Lead Time chart plots the average lead time using a log scale on the y-axis 
 - Perform this calculation for each day in the reporting period (looking back over the previous X-days) to get the data
 
 The Deployment Frequency chart plots the average deployment frequency using a log scale on the y-axis in order to handle the large amount of variation that could occur. The performance bands (Elite, High, etc.) are based on the ranges in the 2019 DORA report.
+
+![Example Deployment Frequency chart](./docs/img/deploy_frequency.png)
 
 ### Change Fail Percentage
 
