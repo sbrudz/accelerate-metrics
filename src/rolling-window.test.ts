@@ -6,14 +6,14 @@ describe("rolling window calculations", () => {
     describe("given a start date, a reportOnDuration, a window interval, and a window duration", () => {
       const reportStart = DateTime.fromISO("2019-06-07T18:00:00.000Z");
       const reportEnd = DateTime.fromISO("2020-06-07T18:00:00.000Z");
-      const windowIntervalSize = { days: 7 };
+      const samplingFrequency = { days: 7 };
       const windowDuration = { days: 20 };
 
       it("should return one interval for each time point", () => {
         const result = rollingWindows({
           reportStart,
           reportEnd,
-          windowIntervalSize,
+          samplingFrequency,
           windowDuration,
         });
         expect(result).toHaveLength(53);
@@ -23,7 +23,7 @@ describe("rolling window calculations", () => {
         const result = rollingWindows({
           reportStart,
           reportEnd,
-          windowIntervalSize,
+          samplingFrequency,
           windowDuration,
         });
         expect(

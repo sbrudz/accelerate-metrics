@@ -22,10 +22,14 @@ const reportParams = {
   reportFileName,
   reportStart,
   reportEnd,
-  windowIntervalSize: { days: 1 },
-  windowDuration: { days: 14 },
+  samplingFrequency: { days: 3 },
+  windowDuration: { days: 30 },
 };
 
-generateReport(reportParams).then((params) => {
-  console.log(`New report generated. Available at ${params.reportFileName}`);
-});
+try {
+  generateReport(reportParams).then((params) => {
+    console.log(`New report generated. Available at ${params.reportFileName}`);
+  });
+} catch (e) {
+  console.error(e);
+}

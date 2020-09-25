@@ -9,18 +9,18 @@ export const windowPerTimePoint = (windowDuration: DurationObject) => (
 export interface RollingWindowInputs {
   reportStart: DateTime;
   reportEnd: DateTime;
-  windowIntervalSize: DurationObject;
+  samplingFrequency: DurationObject;
   windowDuration: DurationObject;
 }
 
 export const rollingWindows = ({
   reportStart,
   reportEnd,
-  windowIntervalSize,
+  samplingFrequency,
   windowDuration,
 }: RollingWindowInputs): Interval[] => {
   const interval = Interval.fromDateTimes(reportStart, reportEnd);
   return interval
-    .splitBy(windowIntervalSize)
+    .splitBy(samplingFrequency)
     .map(windowPerTimePoint(windowDuration));
 };
