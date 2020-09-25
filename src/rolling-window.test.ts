@@ -7,24 +7,24 @@ describe("rolling window calculations", () => {
       const reportStart = DateTime.fromISO("2019-06-07T18:00:00.000Z");
       const reportEnd = DateTime.fromISO("2020-06-07T18:00:00.000Z");
       const samplingFrequency = { days: 7 };
-      const windowDuration = { days: 20 };
+      const sampleWindowSize = { days: 20 };
 
       it("should return one interval for each time point", () => {
         const result = rollingWindows({
           reportStart,
           reportEnd,
           samplingFrequency,
-          windowDuration,
+          sampleWindowSize,
         });
         expect(result).toHaveLength(53);
       });
 
-      it("should return intervals with a size of windowDuration", () => {
+      it("should return intervals with a size of sampleWindowSize", () => {
         const result = rollingWindows({
           reportStart,
           reportEnd,
           samplingFrequency,
-          windowDuration,
+          sampleWindowSize,
         });
         expect(
           result.map((interval) => interval.length("days"))
@@ -34,7 +34,7 @@ describe("rolling window calculations", () => {
   });
 
   describe("windowPerTimePoint", () => {
-    describe("given a windowDuration", () => {
+    describe("given a sampleWindowSize", () => {
       it("should return a function", () => {
         const result = windowPerTimePoint({ days: 20 });
         expect(result).toBeInstanceOf(Function);
@@ -50,7 +50,7 @@ describe("rolling window calculations", () => {
           expect(result.end).toEqual(intervalEnd);
         });
 
-        it("should return a new interval that starts windowDuration before the original interval end", () => {
+        it("should return a new interval that starts sampleWindowSize before the original interval end", () => {
           const expectedIntervalStart = DateTime.fromISO(
             "2019-06-10T18:00:00.000Z"
           );

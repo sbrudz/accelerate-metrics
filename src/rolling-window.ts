@@ -10,17 +10,17 @@ export interface RollingWindowInputs {
   reportStart: DateTime;
   reportEnd: DateTime;
   samplingFrequency: DurationObject;
-  windowDuration: DurationObject;
+  sampleWindowSize: DurationObject;
 }
 
 export const rollingWindows = ({
   reportStart,
   reportEnd,
   samplingFrequency,
-  windowDuration,
+  sampleWindowSize,
 }: RollingWindowInputs): Interval[] => {
   const interval = Interval.fromDateTimes(reportStart, reportEnd);
   return interval
     .splitBy(samplingFrequency)
-    .map(windowPerTimePoint(windowDuration));
+    .map(windowPerTimePoint(sampleWindowSize));
 };

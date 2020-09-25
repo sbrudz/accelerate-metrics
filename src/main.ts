@@ -23,7 +23,7 @@ const reportParams = {
   reportStart,
   reportEnd,
   samplingFrequency: { days: 3 },
-  windowDuration: { days: 30 },
+  sampleWindowSize: { days: 30 },
 };
 
 try {

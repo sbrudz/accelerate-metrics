@@ -22,7 +22,7 @@ export async function generateReport(params: ReportParams) {
     "./src/report.ejs",
     {
       projectName: params.herokuAppName,
-      windowSize: Duration.fromObject(params.windowDuration).toFormat("d"),
+      windowSize: Duration.fromObject(params.sampleWindowSize).toFormat("d"),
       deployFreqData: JSON.stringify(deployFreqData),
       leadTimeData: JSON.stringify(leadTimeData),
     },
