@@ -1,4 +1,5 @@
 import { HerokuPlatformApiRelease } from "@heroku-cli/typescript-api-schema";
+import mockConsole from "jest-mock-console";
 import { getDeployments } from "./heroku-deployments";
 import { DateTime } from "luxon";
 
@@ -8,6 +9,7 @@ describe("getDeployments", () => {
     get: jest.fn(),
   };
   beforeEach(() => {
+    mockConsole();
     mockHerokuClient.get.mockReset();
     mockHerokuClient.request.mockReset();
   });

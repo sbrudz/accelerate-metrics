@@ -14,10 +14,12 @@ export const getDeployments = async (
   const releases = await herokuClient.get<HerokuPlatformApiRelease[]>(
     `/apps/${appName}/releases`
   );
+  console.log(`Found ${releases.length} Heroku releases for ${appName}`);
   const deployRegExp = /^Deploy (?<commit>.+)/;
   const deployments = releases.filter((release) =>
     deployRegExp.test(release.description || "")
   );
+  console.log(`${deployments.length} of those releases were code deploys`);
   return deployments.map((deploy) => {
     const match = deployRegExp.exec(deploy.description || "");
     if (!match || !match.groups) {
