@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Accelerate Metrics for <%= projectName %></title>
+    <title>Accelerate Metrics for <%= projectName; %></title>
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/histogram-bellcurve.js"></script>
     <script src="https://unpkg.com/mathjs@7.2.0/dist/math.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.23.1/humanize-duration.min.js"></script>
     <style type="text/css">
         body {
             font-family: sans-serif;
         }
+
         h1 {
             text-align: center;
         }
+
         p {
             margin: 1em 2em;
             text-align: justify;
@@ -20,14 +23,14 @@
     </style>
 </head>
 <body>
-<h1>Accelerate Metrics for <%= projectName %></h1>
+<h1>Accelerate Metrics for <%= projectName; %></h1>
 <p>
     The <a href="https://www.devops-research.com/research.html">DevOps Research & Assessment program</a> (DORA),
     a part of Google Cloud,
     uses behavioral science to identify the most effective and efficient ways to develop and deliver software.
     Over the last six years, they have developed and validated metrics that provide a high-level systems
     view of software delivery and performance and predict an organization's ability to achieve its goals.
-    This report presents the metrics for the <b><%= projectName %> project</b>.  For more details on the metrics
+    This report presents the metrics for the <b><%= projectName; %> project</b>. For more details on the metrics
     and methodology, see the <a href="https://itrevolution.com/book/accelerate/">Accelerate book</a> and the
     <a href="https://cloud.google.com/devops/state-of-devops">latest DORA report</a>.
 </p>
@@ -36,9 +39,9 @@
 <div id="mttr"></div>
 <div id="change-fail"></div>
 <script type="application/javascript">
-    const bandColorsWarm = ['rgba(255,255,212,0.5)','rgba(254,217,142, 0.5)','rgba(254,153,41, 0.5)','rgba(204,76,2, 0.5)'];
-    const bandColorsCool = ['rgba(237,248,251,0.5)','rgba(179,205,227,0.5)','rgba(140,150,198,0.5)','rgba(136,65,157,0.5)'];
-    const bandColors = bandColorsWarm;
+  const bandColorsWarm = ['rgba(255,255,212,0.5)', 'rgba(254,217,142, 0.5)', 'rgba(254,153,41, 0.5)', 'rgba(204,76,2, 0.5)'];
+  const bandColorsCool = ['rgba(237,248,251,0.5)', 'rgba(179,205,227,0.5)', 'rgba(140,150,198,0.5)', 'rgba(136,65,157,0.5)'];
+  const bandColors = bandColorsWarm;
 </script>
 <script type="application/javascript">
   const formatFreq = (freq) => {
@@ -93,14 +96,14 @@
     time: {
       useUTC: false
     },
-    yAxis: {
+    yAxis: [{
       type: "logarithmic",
       title: {
-        text: "<%= windowSize %>-day rolling average<br/>of deploy frequency",
+        text: "<%= windowSize; %>-day rolling average<br/>of deploy frequency",
         html: true
       },
       labels: {
-        formatter: function () {
+        formatter: function() {
           return formatFreq(this.value);
         },
       },
@@ -145,23 +148,51 @@
             text: "Elite"
           }
         }
-      ]
-    },
-    tooltip: {
-      pointFormatter: function () {
-        return `<span style="color:${this.color}">●</span> ${
-          this.series.name
-        }: <b>${formatFreq(this.y)}</b><br/>`;
+      ],
+    }, {
+      title: {
+        text: "Releases per Day",
       },
-    },
+      opposite: true
+    }
+    ],
     series: [
       {
         type: "line",
         name: "Average Deploy Frequency",
-        data: <%=deployFreqData%>,
+        data: <%= deployFreqData; %>,
         marker: {
           enabled: false
+        },
+        tooltip: {
+          pointFormatter: function() {
+            return `<span style="color:${this.color}">●</span> ${
+              this.series.name
+            }: <b>${formatFreq(this.y)}</b><br/>`;
+          },
         }
+      },
+      {
+        type: "histogram",
+        name: "Releases per Day",
+        xAxis: 0,
+        yAxis: 1,
+        baseSeries: 'releases',
+        zIndex: -100,
+        binWidth: 8.64e+7,
+        tooltip: {
+          pointFormatter: function() {
+            return `
+  <span style="font-size:10px">${Highcharts.dateFormat('%A, %b %d, %Y', this.x)} to ${Highcharts.dateFormat('%A, %b %d, %Y', this.x2)}</span><br/>
+  <span style="color:${this.color}">\u25CF</span> <b>${this.y}</b> releases<br/>`;
+          },
+        },
+      },
+      {
+        data: <%= deploymentTimestamps; %>,
+        id: 'releases',
+        visible: false,
+        showInLegend: false
       }
     ],
   });
@@ -198,10 +229,10 @@
       type: "logarithmic",
       title: {
         html: true,
-        text: "<%= windowSize %>-day rolling average<br/>of lead time",
+        text: "<%= windowSize; %>-day rolling average<br/>of lead time",
       },
       labels: {
-        formatter: function () {
+        formatter: function() {
           return humanizeDuration(this.value, { largest: 1, round: true });
         },
       },
@@ -249,7 +280,7 @@
       ]
     },
     tooltip: {
-      pointFormatter: function () {
+      pointFormatter: function() {
         return `<span style="color:${this.color}">●</span> ${
           this.series.name
         }: <b>${humanizeDuration(this.y, { largest: 2 })}</b><br/>`;
@@ -259,7 +290,7 @@
       {
         type: "line",
         name: "Average Lead Time",
-        data: <%=leadTimeData%>,
+        data: <%= leadTimeData; %>,
         marker: {
           enabled: false
         }
@@ -299,10 +330,10 @@
       type: "logarithmic",
       title: {
         html: true,
-        text: "<%= windowSize %>-day rolling average<br/>of mean time to restore service",
+        text: "<%= windowSize; %>-day rolling average<br/>of mean time to restore service",
       },
       labels: {
-        formatter: function () {
+        formatter: function() {
           return humanizeDuration(this.value, { largest: 1, round: true });
         },
       },
@@ -316,7 +347,7 @@
       ].map((v) => Math.log10(v))
     },
     tooltip: {
-      pointFormatter: function () {
+      pointFormatter: function() {
         return `<span style="color:${this.color}">●</span> ${
           this.series.name
         }: <b>${humanizeDuration(this.y, { largest: 2 })}</b><br/>`;
@@ -356,7 +387,7 @@
     yAxis: {
       title: {
         html: true,
-        text: "<%= windowSize %>-day rolling average<br/>of change-fail percentage",
+        text: "<%= windowSize; %>-day rolling average<br/>of change-fail percentage",
       },
       labels: {
         format: '{value}%'
