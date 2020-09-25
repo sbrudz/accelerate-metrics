@@ -2,6 +2,7 @@ import { DateTime, Interval } from "luxon";
 import {
   averageFrequency,
   bestMeanFrequency,
+  FrequencyOverTimePeriod,
   getIntervalsBetween,
   meanFrequencyPerTimePeriod,
   toHertz,
@@ -216,6 +217,24 @@ describe("Deployment Frequency calculations", () => {
             timePeriod: { months: 6 },
           });
         });
+      });
+    });
+
+    describe("when the number of releases drops greatly in a window", () => {
+      const window = Interval.fromDateTimes(
+        DateTime.fromISO("2020-09-09T00:00:00.000Z"),
+        DateTime.fromISO("2020-09-23T00:00:00.000Z")
+      );
+      const deploy1 = DateTime.fromISO("2020-09-17T18:45:00.000Z");
+      const deploys = [deploy1];
+
+      it("should NOT fall off a cliff", () => {
+        const result = bestMeanFrequency(deploys, window);
+        const expected: FrequencyOverTimePeriod = {
+          amount: 1,
+          timePeriod: { month: 1 },
+        };
+        expect(result).toEqual(expected);
       });
     });
   });
