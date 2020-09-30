@@ -10,7 +10,7 @@ const reportFileName = "./report.html";
 const reportEndEnvStr = process.env.REPORT_END_DATE;
 const reportEnd = reportEndEnvStr
   ? DateTime.fromISO(reportEndEnvStr)
-  : DateTime.fromJSDate(new Date()).startOf("day");
+  : DateTime.fromJSDate(new Date()).endOf("day");
 
 const reportStartEnvStr = process.env.REPORT_START_DATE;
 const reportStart = reportStartEnvStr
