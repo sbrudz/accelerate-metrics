@@ -18,7 +18,7 @@
     "url": "git+https://github.com/sbrudz/accelerate-metrics.git"
   },
   "author": "Steve Brudz",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/sbrudz/accelerate-metrics/issues"
   },
