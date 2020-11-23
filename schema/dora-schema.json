@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/sbrudz/accelerate-metrics/schema/dora-schema.json",
+  "title": "DevOps Research Metrics schema",
+  "description": "A schema defining a standardized way of capturing data for DevOps metrics",
+  "type": "object",
+  "required": ["releases"],
+  "properties": {
+    "metadata": {
+      "description": "Optional metadata to provide context for the data in the file",
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "string",
+          "description": "The name of the company associated with the data"
+        }
+      }
+    },
+    "releases": {
+      "type": "array",
+      "description": "A list of information about code releases",
+      "items": {
+        "type": "object",
+        "required": ["timestamp", "changes"],
+        "properties": {
+          "release-id": {
+            "type": "string",
+            "description": "An optional identifier for this release"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The date and time that the release occurred",
+            "format": "date-time"
+          },
+          "changes": {
+            "type": "array",
+            "description": "A list of code changes associated with the release",
+            "items": {
+              "type": "object",
+              "description": "A single code change, often a git commit",
+              "required": ["timestamp"],
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "description": "The date and time that the code change was committed to version control",
+                  "format": "date-time"
+                },
+                "change-id": {
+                  "type": "string",
+                  "description": "An optional identifier for the code change; often a git commit SHA"
+                }
+              }
+            }
+          },
+          "service-incidents": {
+            "type": "array",
+            "description": "A list of service incidents or defects related to this release that impacted users (e.g., lead to service impairment or service outage) and subsequently required remediation (e.g., require a hotfix, rollback, fix forward, patch)",
+            "items": {
+              "type": "object",
+              "description": "An incident that resulted in degraded service for users",
+              "required": ["restore-timestamp"],
+              "properties": {
+                "restore-timestamp": {
+                  "type": "string",
+                  "description": "The date and time that service was restored",
+                  "format": "date-time"
+                },
+                "start-timestamp": {
+                  "type": "string",
+                  "description": "An optional start date and time for the incident; if none if provided, then the release timestamp should be used as the incident start",
+                  "format": "date-time"
+                },
+                "incident-id": {
+                  "type": "string",
+                  "description": "An optional identifier for the incident. For example, a JIRA issue id."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
