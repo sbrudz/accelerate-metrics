@@ -23,11 +23,11 @@
         "type": "object",
         "required": ["timestamp", "changes"],
         "properties": {
-          "project-id": {
+          "projectId": {
             "type": "string",
             "description": "An optional identifier for this project associated with this release; useful for aggregation"
           },
-          "release-id": {
+          "releaseId": {
             "type": "string",
             "description": "An optional identifier for this release"
           },
@@ -49,32 +49,32 @@
                   "description": "The date and time that the code change was committed to version control",
                   "format": "date-time"
                 },
-                "change-id": {
+                "changeId": {
                   "type": "string",
                   "description": "An optional identifier for the code change; often a git commit SHA"
                 }
               }
             }
           },
-          "service-incidents": {
+          "serviceIncidents": {
             "type": "array",
             "description": "A list of service incidents or defects related to this release that impacted users (e.g., lead to service impairment or service outage) and subsequently required remediation (e.g., require a hotfix, rollback, fix forward, patch)",
             "items": {
               "type": "object",
               "description": "An incident that resulted in degraded service for users",
-              "required": ["restore-timestamp"],
+              "required": ["restoreTimestamp"],
               "properties": {
-                "restore-timestamp": {
+                "restoreTimestamp": {
                   "type": "string",
                   "description": "The date and time that service was restored",
                   "format": "date-time"
                 },
-                "start-timestamp": {
+                "startTimestamp": {
                   "type": "string",
                   "description": "An optional start date and time for the incident; if none if provided, then the release timestamp should be used as the incident start",
                   "format": "date-time"
                 },
-                "incident-id": {
+                "incidentId": {
                   "type": "string",
                   "description": "An optional identifier for the incident. For example, a JIRA issue id."
                 }

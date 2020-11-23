@@ -4,46 +4,46 @@
   },
   "releases": [
     {
-      "project-id": "Sample Application",
-      "release-id": "v1",
+      "projectId": "Sample Application",
+      "releaseId": "v1",
       "timestamp": "2020-10-10T15:45:00.000+00:00",
       "changes": [
         {
           "timestamp": "2020-10-02T12:14:00.000+00:00",
-          "change-id": "39ff5a76859a0dbd2a72a93257447e64a6258c11"
+          "changeId": "39ff5a76859a0dbd2a72a93257447e64a6258c11"
         }
       ]
     },
     {
-      "project-id": "Sample Application",
-      "release-id": "v2",
+      "projectId": "Sample Application",
+      "releaseId": "v2",
       "timestamp": "2020-11-01T14:23:00.000+00:00",
       "changes": [
         {
           "timestamp": "2020-10-28T16:09:00.000+00:00",
-          "change-id": "1f85eb3891b8181ae741aa8d1416d983e831ef18"
+          "changeId": "1f85eb3891b8181ae741aa8d1416d983e831ef18"
         },
         {
           "timestamp": "2020-10-30T08:32:00.000+00:00",
-          "change-id": "65d936af91dc8a2be343363f6d601ac8c5fc1f40"
+          "changeId": "65d936af91dc8a2be343363f6d601ac8c5fc1f40"
         }
       ],
-      "service-incidents": [
+      "serviceIncidents": [
         {
-          "start-timestamp": "2020-11-02T01:42:00.000+00:00",
-          "restore-timestamp": "2020-11-02T06:19:00.000+00:00",
-          "incident-id": "SAMP-451"
+          "startTimestamp": "2020-11-02T01:42:00.000+00:00",
+          "restoreTimestamp": "2020-11-02T06:19:00.000+00:00",
+          "incidentId": "SAMP-451"
         }
       ]
     },
     {
-      "project-id": "Sample Application",
-      "release-id": "v2.1",
+      "projectId": "Sample Application",
+      "releaseId": "v2.1",
       "timestamp": "2020-11-02T06:19:00.000+00:00",
       "changes": [
         {
           "timestamp": "2020-11-02T05:59:00.000+00:00",
-          "change-id": "82e3560350ccd19d18c990c795118b37cda93b4e"
+          "changeId": "82e3560350ccd19d18c990c795118b37cda93b4e"
         }
       ]
     }
