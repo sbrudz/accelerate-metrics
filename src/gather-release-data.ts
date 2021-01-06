@@ -8,6 +8,43 @@ export const gatherReleaseData = async (
   const releases = [];
   let prevDeploy;
   for (const deploy of deployments) {
+    console.log(
+      "gatherReleaseData for commit:",
+      deploy.commit,
+      "date:",
+      deploy.timeCreated.toRFC2822()
+    );
+    // TODO: fix getCommitsBetweenRevisions so that prevDeploy is optional
+    let commits;
+    if (prevDeploy) {
+      commits = await getCommitsBetweenRevisions(prevDeploy, deploy);
+    } else {
+      commits = await getCommitsBetweenRevisions(deploy);
+    }
+    releases.push({
+      timestamp: deploy.timeCreated.toISO(),
+      releaseId: deploy.commit,
+      changes: commits.map((commit) => ({
+        timestamp: commit.timeCreated.toISO(),
+        changeId: commit.commit,
+      })),
+    });
+    prevDeploy = deploy;
+  }
+
+  return { releases };
+};
+
+export const gatherReleaseDataV2 = async (deployments: Deployment[]) => {
+  const releases = [];
+  let prevDeploy;
+  for (const deploy of deployments) {
+    console.log(
+      "gatherReleaseData for commit:",
+      deploy.commit,
+      "date:",
+      deploy.timeCreated.toRFC2822()
+    );
     // TODO: fix getCommitsBetweenRevisions so that prevDeploy is optional
     let commits;
     if (prevDeploy) {

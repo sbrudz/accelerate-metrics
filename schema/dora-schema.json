@@ -62,16 +62,16 @@
             "items": {
               "type": "object",
               "description": "An incident that resulted in degraded service for users",
-              "required": ["restoreTimestamp"],
+              "required": ["recoveryTimestamp"],
               "properties": {
-                "restoreTimestamp": {
+                "recoveryTimestamp": {
                   "type": "string",
                   "description": "The date and time that service was restored",
                   "format": "date-time"
                 },
-                "startTimestamp": {
+                "detectionTimestamp": {
                   "type": "string",
-                  "description": "An optional start date and time for the incident; if none if provided, then the release timestamp should be used as the incident start",
+                  "description": "An optional start date and time for the incident; if none provided, then the release timestamp should be used as the incident start",
                   "format": "date-time"
                 },
                 "incidentId": {
