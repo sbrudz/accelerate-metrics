@@ -1,0 +1,27 @@
+name: 'Accelerate Metrics'
+description: 'A GitHub action to generate the four key metrics from Accelerate for a project'
+author: 'Steve Brudz'
+inputs:
+  heroku_api_token:
+    description: 'A heroku OAuth token (from `heroku authorizations:create` -- must have view privileges on the heroku_app_name)'
+    required: true
+  heroku_app_name:
+    description: 'Name of the app in Heroku to use for releases (from `heroku apps --team my_team`)'
+    required: true
+  git_project_directory:
+    description: 'Path to git repository for project to report on'
+    required: false
+    default: '/github/workspace'
+  report_timeframe:
+    description: 'Number of months back to report on'
+    required: false
+    default: '3'
+  report_end_date:
+    description: "End of report time period as ISO string (e.g. 2020-09-05). Defaults to today's date"
+    required: false
+runs:
+  using: 'node14'
+  main: 'dist/index.js'
+branding:
+  icon: 'bar-chart-2'
+  color: 'green'
