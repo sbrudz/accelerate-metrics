@@ -5,7 +5,7 @@ import { calculateDeploymentFrequency } from "./deployment-frequency";
 import { calculateAverageLeadTime } from "./lead-time";
 import ejs from "ejs";
 import { Duration, Interval } from "luxon";
-import fs from "fs/promises";
+import { promises as fs } from "fs";
 
 export interface ReportParams extends RollingWindowInputs {
   reportFileName: string;
