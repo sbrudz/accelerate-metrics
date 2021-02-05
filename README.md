@@ -1,6 +1,6 @@
 # accelerate-metrics
 
-A tool to calculate [DevOps Research & Assessment](https://www.devops-research.com/research.html) (DORA) metrics from project data. It currently supports Heroku releases and git commits.
+A GitHub action to calculate [DevOps Research & Assessment](https://www.devops-research.com/research.html) (DORA) metrics from Heroku release data.
 
 The metrics are based on the [Accelerate](https://itrevolution.com/book/accelerate/) book by Nicole Forsgren, Jez Humble, and Gene Kim. The authors formed the DORA program, which is now a part of Google Cloud. They used behavioral science to identify the most effective and efficient ways to develop and deliver software. Over the last six years, they have developed and validated metrics that provide a high-level systems view of software delivery and performance and predict an organization's ability to achieve its goals.
 
@@ -21,20 +21,29 @@ In 2019, they added a 5th metric, **availability**. It varies from team-to-team,
 
 ## Usage
 
-Prerequisites:
+See [action.yml](action.yml)
 
-- node.js > 14.4
-- git for source code version management
-- heroku for deployment
-- `cp .env.example .env` and fill in your environment variables
+Make sure to add `HEROKU_API_TOKEN` to your GitHub secrets. It needs to have read permission for the app that you want to report on.
 
-To generate the report:
+```yaml
+steps:
+  - name: Checkout
+    uses: actions/checkout@v2
+    with:
+      fetch-depth: 0
+  - name: Generate Accelerate Metrics
+    uses: sbrudz/accelerate-metrics@v1
+    with:
+      heroku_api_token: ${{ secrets.HEROKU_API_TOKEN }}
+      heroku_app_name: "your-app-name"
+  - uses: actions/upload-artifact@v2
+    name: Store metrics report
+    with:
+      name: accelerate-metrics-report
+      path: report.html
+```
 
-- `npm run generate`
-
-To run the tests:
-
-- `npm test`
+The resulting report can then be downloaded from artifacts section of the workflow summary page.
 
 ## Motivation
 
@@ -94,6 +103,29 @@ The one murky area remaining related to stability is the release or situation th
 
 The challenge is that "degraded service" will likely mean different things for different applications. Monitoring services such as New Relic allow thresholds to be configured. Heroku offers similar functionality for professional dynos but does not expose it via their public API. This data could be used to inform the MTTR metric. In the future, this project will look at integrating that availability and alerting data into the metrics. For now, it is out of scope.
 
+## Development
+
+Prerequisites:
+
+- node.js >= 12.14
+
+Setup:
+
+- git clone the repo
+- Run `npm install` in the project root
+
+Tests:
+
+- `npm test`
+
+Linting:
+
+- `npm run lint`
+
+Preparing for deployment:
+
+- `npm run all`
+
 ## Acknowledgements
 
 - Thank you to [Red Gate Software](https://www.red-gate.com/) for open sourcing their metrics code. The code in this project is greatly inspired by their approach.
@@ -112,12 +144,11 @@ The challenge is that "degraded service" will likely mean different things for d
 - [ ] Capture degraded service events from GitHub issues
 - [ ] MTTR graph
 - [ ] Change/Fail graph
-- [ ] better error handling/messages if a commit doesn't exist in the git history
-- [ ] convert to a github action so that the report can be generated regularly
+- [x] better error handling/messages if a commit doesn't exist in the git history
+- [x] convert to a github action so that the report can be generated regularly
 - [ ] Capture degraded service events from Heroku rollbacks
-- [ ] Capture degraded service events from Sentry API
+- [x] show releases per day as a histogram on the Deploy Frequency chart
 
 Possible new features:
 
-- [ ] show releases per day as a histogram on the Deploy Frequency chart
 - [ ] show lead times per release on the Lead Time chart
