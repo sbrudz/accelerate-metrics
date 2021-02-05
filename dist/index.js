@@ -107,9 +107,8 @@ const util_1 = __nccwpck_require__(31669);
 const child_process_1 = __nccwpck_require__(63129);
 const exec = util_1.promisify(child_process_1.exec);
 exports.getCommitsBetweenRevisions = (start, end) => __awaiter(void 0, void 0, void 0, function* () {
-    const gitProjectDirectory = core.getInput("git_project_directory");
     const revisionQuery = end ? `${start.commit}..${end.commit}` : start.commit;
-    const command = `cd ${gitProjectDirectory} && git log --pretty=format:"%h,%aI" "${revisionQuery}" --no-merges`;
+    const command = `git log --pretty=format:"%h,%aI" "${revisionQuery}" --no-merges`;
     const { stdout, stderr } = yield exec(command);
     if (stderr) {
         console.error(stderr);

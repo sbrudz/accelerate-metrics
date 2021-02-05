@@ -11,9 +11,8 @@ export const getCommitsBetweenRevisions = async (
   start: Deployment,
   end?: Deployment
 ): Promise<Deployment[]> => {
-  const gitProjectDirectory = core.getInput("git_project_directory");
   const revisionQuery = end ? `${start.commit}..${end.commit}` : start.commit;
-  const command = `cd ${gitProjectDirectory} && git log --pretty=format:"%h,%aI" "${revisionQuery}" --no-merges`;
+  const command = `git log --pretty=format:"%h,%aI" "${revisionQuery}" --no-merges`;
   const { stdout, stderr } = await exec(command);
 
   if (stderr) {

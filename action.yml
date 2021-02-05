@@ -8,10 +8,6 @@ inputs:
   heroku_app_name:
     description: 'Name of the app in Heroku to use for releases (from `heroku apps --team my_team`)'
     required: true
-  git_project_directory:
-    description: 'Path to git repository for project to report on'
-    required: false
-    default: '/github/workspace'
   report_timeframe:
     description: 'Number of months back to report on'
     required: false
