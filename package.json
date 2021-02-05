@@ -1,6 +1,6 @@
 {
   "name": "accelerate-metrics",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A tool to calculate Accelerate DevOps metrics",
   "main": "lib/main.js",
   "scripts": {
