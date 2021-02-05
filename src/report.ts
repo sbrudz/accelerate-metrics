@@ -6,6 +6,7 @@ import { calculateAverageLeadTime } from "./lead-time";
 import ejs from "ejs";
 import { Duration, Interval } from "luxon";
 import { promises as fs } from "fs";
+import { REPORT_TEMPLATE } from "./report-template";
 
 export interface ReportParams extends RollingWindowInputs {
   reportFileName: string;
@@ -29,8 +30,8 @@ export async function generateReport(
   const windows = rollingWindows(params);
   const deployFreqData = calculateDeploymentFrequency(deployments, windows);
   const leadTimeData = await calculateAverageLeadTime(deployments, windows);
-  const reportHtml = await ejs.renderFile(
-    "./src/report.ejs",
+  const reportHtml = await ejs.render(
+    REPORT_TEMPLATE,
     {
       projectName: params.herokuAppName,
       windowSize: Duration.fromObject(params.sampleWindowSize).toFormat("d"),
