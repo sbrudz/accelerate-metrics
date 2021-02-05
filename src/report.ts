@@ -12,9 +12,11 @@ export interface ReportParams extends RollingWindowInputs {
   herokuAppName: string;
 }
 
-export async function generateReport(params: ReportParams) {
-  const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN });
-  const deployments = await getDeployments(params.herokuAppName, heroku);
+export async function generateReport(
+  params: ReportParams,
+  herokuClient: Heroku
+) {
+  const deployments = await getDeployments(params.herokuAppName, herokuClient);
 
   const reportPeriod = Interval.fromDateTimes(
     params.reportStart,

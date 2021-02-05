@@ -1,8 +1,12 @@
 import * as core from "@actions/core";
 import { DateTime } from "luxon";
 import { generateReport } from "./report";
+import Heroku from "heroku-client";
 
 async function run(): Promise<void> {
+  const heroku_api_token = core.getInput("heroku_api_token");
+  const herokuClient = new Heroku({ token: heroku_api_token });
+
   const appName = core.getInput("heroku_app_name");
   if (appName === undefined) {
     throw new Error("heroku_app_name must be defined.");
@@ -28,7 +32,7 @@ async function run(): Promise<void> {
   };
 
   try {
-    await generateReport(reportParams);
+    await generateReport(reportParams, herokuClient);
     core.debug(
       `New report generated successfully. Available at ${reportFileName}`
     );
