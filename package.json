@@ -13,7 +13,7 @@
     "test:coverage": "npm test -- --coverage",
     "lint": "eslint src/**/*.ts --cache --fix",
     "format": "prettier --loglevel warn --write \"**/*.{js,ts,md}\"",
-    "all": "npm run build && npm run format && npm run lint && npm test"
+    "all": "npm run build && npm run format && npm run lint && npm test && npm run package"
   },
   "repository": {
     "type": "git",
