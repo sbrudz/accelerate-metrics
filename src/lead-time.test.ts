@@ -6,7 +6,7 @@ import {
   getLeadTimes,
   getPairs,
 } from "./lead-time";
-import { getCommitsBetweenRevisions } from "./git-utils";
+import { doesCommitExist, getCommitsBetweenRevisions } from "./git-utils";
 import { Deployment } from "./heroku-deployments";
 
 jest.mock("./git-utils");
@@ -14,6 +14,7 @@ const mockedGetCommitsBetweenRevisions = mocked(
   getCommitsBetweenRevisions,
   true
 );
+const mockedDoesCommitExist = mocked(doesCommitExist, true);
 
 describe("lead-time functions", () => {
   const time1 = DateTime.utc(2020, 6, 10);
@@ -25,6 +26,8 @@ describe("lead-time functions", () => {
     mockedGetCommitsBetweenRevisions.mockResolvedValue([
       { commit: "789", timeCreated: time3 },
     ]);
+    mockedDoesCommitExist.mockReset();
+    mockedDoesCommitExist.mockResolvedValue(true);
   });
 
   describe("calculateAverageLeadTime", () => {
@@ -66,6 +69,33 @@ describe("lead-time functions", () => {
       it("should return the average lead time for the commits associated with that deploy", async () => {
         const result = await calculateAverageLeadTime(deployments, windows);
         expect(result).toHaveLength(windows.length);
+      });
+    });
+
+    describe("when a deploy commit does not exist in git", () => {
+      const deployments = [
+        {
+          commit: "123",
+          timeCreated: time1,
+        },
+        {
+          commit: "456",
+          timeCreated: time2,
+        },
+      ];
+      const windows = [
+        Interval.fromDateTimes(time1.startOf("month"), time1.endOf("month")),
+      ];
+
+      beforeEach(() => {
+        mockedDoesCommitExist.mockReset();
+        mockedDoesCommitExist.mockResolvedValueOnce(true);
+        mockedDoesCommitExist.mockResolvedValueOnce(false);
+      });
+
+      it("should skip that deployment for calculating lead time", async () => {
+        const result = await calculateAverageLeadTime(deployments, windows);
+        expect(result).toHaveLength(1);
       });
     });
   });

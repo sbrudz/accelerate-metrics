@@ -30,3 +30,14 @@ export const getCommitsBetweenRevisions = async (
     },
   });
 };
+
+export const doesCommitExist = async (commit: string): Promise<boolean> => {
+  const command = `git log -1 --format='%H' ${commit}`;
+  try {
+    await exec(command);
+  } catch (error) {
+    core.warning(`Commit ${commit} does not exist. Error: ${error}`);
+    return false;
+  }
+  return true;
+};

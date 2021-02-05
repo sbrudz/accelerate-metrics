@@ -15,7 +15,7 @@ export interface ReportParams extends RollingWindowInputs {
 export async function generateReport(
   params: ReportParams,
   herokuClient: Heroku
-) {
+): Promise<void> {
   const deployments = await getDeployments(params.herokuAppName, herokuClient);
 
   const reportPeriod = Interval.fromDateTimes(
@@ -41,5 +41,4 @@ export async function generateReport(
     { async: true }
   );
   await fs.writeFile(params.reportFileName, reportHtml, "utf8");
-  return params;
 }
