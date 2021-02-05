@@ -20,7 +20,7 @@ inputs:
     description: "End of report time period as ISO string (e.g. 2020-09-05). Defaults to today's date"
     required: false
 runs:
-  using: 'node14'
+  using: 'node12'
   main: 'dist/index.js'
 branding:
   icon: 'bar-chart-2'
