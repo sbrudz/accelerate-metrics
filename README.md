@@ -135,10 +135,14 @@ Preparing for deployment:
 ## Similar Projects
 
 - https://github.com/red-gate/RedGate.Metrics
-- https://github.com/stelligent/pipeline-dashboard
-- https://www.cloudbees.com/products/devoptics/overview
 - https://github.com/GoogleCloudPlatform/fourkeys
 - https://gitlab.com/gitlab-org/gitlab/-/issues/37139
+- https://github.com/github/roadmap/issues/127
+- https://github.com/stelligent/pipeline-dashboard
+- https://www.cloudbees.com/products/devoptics/overview
+- https://github.com/samsmithnz/DevOpsMetrics
+- https://github.com/brigonzalez/DORAmeter
+- https://github.com/Trendyol/four-key
 
 ## TODO List
 
