@@ -1,3 +1,4 @@
+export const REPORT_TEMPLATE = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -166,9 +167,9 @@
         },
         tooltip: {
           pointFormatter: function() {
-            return `<span style="color:${this.color}">●</span> ${
-              this.series.name
-            }: <b>${formatFreq(this.y)}</b><br/>`;
+            return \`<span style="color:\${this.color}">●</span> \${
+  this.series.name
+}: <b>\${formatFreq(this.y)}</b><br/>\`;
           },
         }
       },
@@ -182,9 +183,14 @@
         binWidth: 8.64e+7,
         tooltip: {
           pointFormatter: function() {
-            return `
-  <span style="font-size:10px">${Highcharts.dateFormat('%A, %b %d, %Y', this.x)} to ${Highcharts.dateFormat('%A, %b %d, %Y', this.x2)}</span><br/>
-  <span style="color:${this.color}">\u25CF</span> <b>${this.y}</b> releases<br/>`;
+            return \`
+  <span style="font-size:10px">\${Highcharts.dateFormat(
+    "%A, %b %d, %Y",
+    this.x
+  )} to \${Highcharts.dateFormat("%A, %b %d, %Y", this.x2)}</span><br/>
+  <span style="color:\${this.color}">\u25CF</span> <b>\${
+  this.y
+}</b> releases<br/>\`;
           },
         },
       },
@@ -281,9 +287,9 @@
     },
     tooltip: {
       pointFormatter: function() {
-        return `<span style="color:${this.color}">●</span> ${
-          this.series.name
-        }: <b>${humanizeDuration(this.y, { largest: 2 })}</b><br/>`;
+        return \`<span style="color:\${this.color}">●</span> \${
+  this.series.name
+}: <b>\${humanizeDuration(this.y, { largest: 2 })}</b><br/>\`;
       },
     },
     series: [
@@ -348,9 +354,9 @@
     },
     tooltip: {
       pointFormatter: function() {
-        return `<span style="color:${this.color}">●</span> ${
-          this.series.name
-        }: <b>${humanizeDuration(this.y, { largest: 2 })}</b><br/>`;
+        return \`<span style="color:\${this.color}">●</span> \${
+  this.series.name
+}: <b>\${humanizeDuration(this.y, { largest: 2 })}</b><br/>\`;
       },
     },
     series: [],
@@ -399,3 +405,4 @@
 </script>
 </body>
 </html>
+`;

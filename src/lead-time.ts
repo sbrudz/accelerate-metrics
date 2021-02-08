@@ -1,7 +1,8 @@
+import filterAsync from "node-filter-async";
 import { Deployment } from "./heroku-deployments";
 import { Interval } from "luxon";
 import { mean } from "mathjs";
-import { getCommitsBetweenRevisions } from "./git-utils";
+import { getCommitsBetweenRevisions, doesCommitExist } from "./git-utils";
 
 type TimeStampValuePair = Array<number>;
 type TimestampValuePairs = Array<TimeStampValuePair>;
@@ -10,9 +11,12 @@ export const calculateAverageLeadTime = async (
   deployments: Deployment[],
   windows: Interval[]
 ): Promise<TimestampValuePairs> => {
+  const verifiedDeployments = await filterAsync(deployments, (deploy) => {
+    return doesCommitExist(deploy.commit);
+  });
   return Promise.all(
     windows.map(async (window) => {
-      const deploysInWindow = deployments.filter((deploy) => {
+      const deploysInWindow = verifiedDeployments.filter((deploy) => {
         return window.contains(deploy.timeCreated);
       });
       return await calculateMeanLeadTimeForWindow(window, deploysInWindow);

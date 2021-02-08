@@ -5,16 +5,19 @@ import { calculateDeploymentFrequency } from "./deployment-frequency";
 import { calculateAverageLeadTime } from "./lead-time";
 import ejs from "ejs";
 import { Duration, Interval } from "luxon";
-import fs from "fs/promises";
+import { promises as fs } from "fs";
+import { REPORT_TEMPLATE } from "./report-template";
 
 export interface ReportParams extends RollingWindowInputs {
   reportFileName: string;
   herokuAppName: string;
 }
 
-export async function generateReport(params: ReportParams) {
-  const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN });
-  const deployments = await getDeployments(params.herokuAppName, heroku);
+export async function generateReport(
+  params: ReportParams,
+  herokuClient: Heroku
+): Promise<void> {
+  const deployments = await getDeployments(params.herokuAppName, herokuClient);
 
   const reportPeriod = Interval.fromDateTimes(
     params.reportStart,
@@ -27,8 +30,8 @@ export async function generateReport(params: ReportParams) {
   const windows = rollingWindows(params);
   const deployFreqData = calculateDeploymentFrequency(deployments, windows);
   const leadTimeData = await calculateAverageLeadTime(deployments, windows);
-  const reportHtml = await ejs.renderFile(
-    "./src/report.ejs",
+  const reportHtml = await ejs.render(
+    REPORT_TEMPLATE,
     {
       projectName: params.herokuAppName,
       windowSize: Duration.fromObject(params.sampleWindowSize).toFormat("d"),
@@ -39,5 +42,4 @@ export async function generateReport(params: ReportParams) {
     { async: true }
   );
   await fs.writeFile(params.reportFileName, reportHtml, "utf8");
-  return params;
 }
