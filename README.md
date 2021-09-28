@@ -1,3 +1,5 @@
+**NOTE:** I've decided to archive this repository because it's only half-completed and there are now other viable options available (e.g, [FourKeys](https://github.com/GoogleCloudPlatform/fourkeys), [Sleuth](https://www.sleuth.io/), [LinearB](https://linearb.io/)).
+
 # accelerate-metrics
 
 A tool to calculate [DevOps Research & Assessment](https://www.devops-research.com/research.html) (DORA) metrics from project data. It currently supports Heroku releases and git commits.
